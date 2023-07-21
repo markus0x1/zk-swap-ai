@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WalletConnectModal
 
 struct ConnectView: View {
     @State private var isPresented = false
