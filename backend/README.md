@@ -1,12 +1,16 @@
-# Express API Starter with Typescript
+# zk-swap-ai
 
-How to use this template:
+## API
 
-```sh
-npx create-express-api --typescript --directory my-api-name
+```text
+/api/swap
+/api/blockchain/balance
+/api/blockchain/blockNumber
+/api/blockchain/getPrice/:dex // A or B
+/api/blockchain/dexStats/:dex // A or B
 ```
 
-Includes API Server utilities:
+# Development
 
 * [morgan](https://www.npmjs.com/package/morgan)
   * HTTP request logger middleware for node.js
