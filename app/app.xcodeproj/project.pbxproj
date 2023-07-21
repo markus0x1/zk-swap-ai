@@ -11,6 +11,8 @@
 		6951EC7F2A6AFFC10002B5D2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6951EC7E2A6AFFC10002B5D2 /* ContentView.swift */; };
 		6951EC812A6AFFC20002B5D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6951EC802A6AFFC20002B5D2 /* Assets.xcassets */; };
 		6951EC852A6AFFC20002B5D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6951EC842A6AFFC20002B5D2 /* Preview Assets.xcassets */; };
+		6951EC8E2A6B010C0002B5D2 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6951EC8D2A6B010C0002B5D2 /* Colors.swift */; };
+		6951EC902A6B01180002B5D2 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6951EC8F2A6B01180002B5D2 /* Config.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +22,8 @@
 		6951EC802A6AFFC20002B5D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6951EC822A6AFFC20002B5D2 /* app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = app.entitlements; sourceTree = "<group>"; };
 		6951EC842A6AFFC20002B5D2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6951EC8D2A6B010C0002B5D2 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		6951EC8F2A6B01180002B5D2 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +56,11 @@
 		6951EC7B2A6AFFC10002B5D2 /* app */ = {
 			isa = PBXGroup;
 			children = (
+				6951EC8C2A6B00FB0002B5D2 /* shared */,
+				6951EC8B2A6B00F20002B5D2 /* ui */,
 				6951EC7C2A6AFFC10002B5D2 /* appApp.swift */,
+				6951EC8F2A6B01180002B5D2 /* Config.swift */,
+				6951EC8D2A6B010C0002B5D2 /* Colors.swift */,
 				6951EC7E2A6AFFC10002B5D2 /* ContentView.swift */,
 				6951EC802A6AFFC20002B5D2 /* Assets.xcassets */,
 				6951EC822A6AFFC20002B5D2 /* app.entitlements */,
@@ -67,6 +75,20 @@
 				6951EC842A6AFFC20002B5D2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6951EC8B2A6B00F20002B5D2 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
+		6951EC8C2A6B00FB0002B5D2 /* shared */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,6 +162,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6951EC7F2A6AFFC10002B5D2 /* ContentView.swift in Sources */,
+				6951EC902A6B01180002B5D2 /* Config.swift in Sources */,
+				6951EC8E2A6B010C0002B5D2 /* Colors.swift in Sources */,
 				6951EC7D2A6AFFC10002B5D2 /* appApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
