@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 
-import ErrorResponse from './interfaces/ErrorResponse';
+interface MessageResponse {
+  message: string;
+}
+
+interface ErrorResponse extends MessageResponse {
+  stack?: string;
+}
 
 export function notFound(req: Request, res: Response, next: NextFunction) {
   res.status(404);

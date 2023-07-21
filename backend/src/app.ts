@@ -5,7 +5,6 @@ import cors from 'cors';
 
 import * as middlewares from './middlewares';
 import api from './api';
-import MessageResponse from './interfaces/MessageResponse';
 
 require('dotenv').config();
 
@@ -15,14 +14,16 @@ app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.set('json spaces', 2)
 
-app.get<{}, MessageResponse>('/', (req, res) => {
+app.get<{}, { message: string }>('/', (req, res) => {
   res.json({
     message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
   });
 });
 
-app.use('/api/v1', api);
+
+app.use('/api', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
