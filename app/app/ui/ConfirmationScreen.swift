@@ -8,8 +8,18 @@
 import SwiftUI
 
 struct ConfirmationScreen: View {
+    @State private var isPresented = false
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Spacer()
+            Button("Sign&Send") {
+                isPresented = true
+            }
+        }
+        .padding()
+        .navigationDestination(isPresented: $isPresented) {
+            SuccessScreen()
+        }
     }
 }
 

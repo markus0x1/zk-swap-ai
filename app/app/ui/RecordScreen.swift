@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct RecordScreen: View {
+    @State private var isPresented = false
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button("TalkToMe") {
+            isPresented = true
+        }
+        .navigationDestination(isPresented: $isPresented) {
+            ConfirmationScreen()
+        }
     }
 }
 

@@ -29,10 +29,12 @@ struct OpenAIResponse: Decodable {
 
 class OpenAIService {
     private let apiUrl = "https://api.openai.com/v1/completions"
-    private let promptTemplate = "Convert this text to a programmatic command:\n\nExample: I want to swap 100 USDC for ETH\nOutput: {inputToken: \"USDC\", inputAmount: 100, outputToken: \"ETH\"}"
+    private let promptTemplate = "Convert this text to a programmatic command:\n\nExample: I want to swap 100 USDC for ETH\nOutput: {\"inputToken\": \"USDC\", \"inputAmount\": 100, \"outputToken\": \"ETH\"}"
     /// Fetches model response for the given prompt
     func requestCompletion(with prompt: String) async throws -> OpenAIResponse? {
         print("Requesting completion for:", prompt)
+        // FIXME: delete dummy response
+        return OpenAIService.dummyResponse
         let model = OpenAIRequest(prompt: "\(promptTemplate)\n\n\(prompt)")
         guard let url = URL(string: apiUrl) else { return nil }
         var request = URLRequest(url: url)
@@ -44,5 +46,21 @@ class OpenAIService {
         let (data, _) = try await URLSession.shared.data(for: request)
         let res = try JSONDecoder().decode(OpenAIResponse.self, from: data)
         return res
+    }
+}
+
+private extension OpenAIService {
+    static var dummyChoice: OpenAIChoice {
+        return OpenAIChoice(
+            text: "\nOutput: {\"inputToken\": \"ETH\", \"inputAmount\": 1, \"outputToken\": \"USDC\"}"
+        )
+    }
+    /// Just for testing, to not waste credits
+    static var dummyResponse: OpenAIResponse {
+        return OpenAIResponse(
+            id: "cmpl-7eqFTk5YRI5iIbrZsFk4s3FDmzBav",
+            model: "text-davinci-003",
+            choices: [dummyChoice]
+        )
     }
 }
