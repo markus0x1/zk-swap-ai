@@ -1,0 +1,7 @@
+{
+  "aggregator_128": {
+    "file": "aggregator",
+    "template": "Aggregator",
+    "params": [128]
+  }
+}
