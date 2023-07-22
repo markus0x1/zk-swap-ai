@@ -21,6 +21,7 @@ struct ConnectView: View {
                     walletConnectManager.setup()
                     WalletConnectModal.present()
                     try await walletConnectManager.listenToSession()
+                    connectionManager.connectionType = .walletconnect
                     isPresented = true
                 }
             } label: {
@@ -38,6 +39,8 @@ struct ConnectView: View {
                     }
                 }, receiveValue: { result in
                     print("Metamask connection result: \(result)")
+                    connectionManager.connectionType = .metamask
+                    isPresented = true
                 }).store(in: &cancellables)
             }) {
                 Image("metamask")

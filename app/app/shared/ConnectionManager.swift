@@ -10,9 +10,9 @@ import Foundation
 import metamask_ios_sdk
 import SwiftUI
 
-extension Notification.Name {
-    static let MetamaskEvent = Notification.Name("event")
-    static let MetamaskConnection = Notification.Name("connection")
+enum SwapAIConnectionType {
+    case metamask
+    case walletconnect
 }
 
 class ConnectionManager: ObservableObject {
@@ -24,9 +24,16 @@ class ConnectionManager: ObservableObject {
         return ethereum.selectedAddress
     }
 
+    var connectionType: SwapAIConnectionType = .walletconnect
+
     init() {
         ethereum.clearSession()
         ethereum.disconnect()
         print("METASMASK.connected", ethereum.connected)
     }
+}
+
+extension Notification.Name {
+    static let MetamaskEvent = Notification.Name("event")
+    static let MetamaskConnection = Notification.Name("connection")
 }
