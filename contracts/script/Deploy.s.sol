@@ -55,7 +55,7 @@ contract DeployPlugin is Script {
     address[] owners = [deployer];
 
     function run() external {
-        (Token weth, Token dai, CPAMM dexA, CPAMM dexB,,,, ISafeManager safeProtocolManager,,) =
+        (Token weth, Token dai, CPAMM dexA, CPAMM dexB,,,, ISafeManager safeProtocolManager,,,) =
             Constants.getContracts();
 
         vm.startBroadcast(privateKey);
@@ -75,7 +75,7 @@ contract DeployPlugin is Script {
 
 contract DeploySafe is Script {
     //external dependencies
-    uint256 constant SALT = 455456445645612186456456556853464545;
+    uint256 SALT = uint256(keccak256(abi.encode(block.timestamp)));
 
     // setup
     uint256 privateKey = vm.envUint("PRIVATE_KEY");
@@ -93,11 +93,10 @@ contract DeploySafe is Script {
             IRegistry registry,
             ISafeManager safeProtocolManager,
             ,
-            Plugin plugin
+            Plugin plugin,
         ) = Constants.getContracts();
 
         vm.startBroadcast(privateKey);
-
 
         // create safe prpxy
         bytes memory initializer = new bytes(0);
@@ -106,7 +105,6 @@ contract DeploySafe is Script {
         // 3. List the hook
         address aPlugin = address(plugin);
         registry.addIntegration(aPlugin, IntegrationType.Plugin);
-
 
         // 1., 2., 4. Deploy a Safe && call enableModule
         DeployManager deploymanager = new DeployManager(IERC20(address(weth)), IERC20(address(dai)), dexA, dexB);
@@ -121,7 +119,6 @@ contract DeploySafe is Script {
             0, // payment,
             payable(0) // paymentReceiver)
         );
-
 
         vm.stopBroadcast();
 

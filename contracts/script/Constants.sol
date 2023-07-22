@@ -36,10 +36,10 @@ library Constants {
     address constant DEX_B_ADDRESS = address(0x91B6E90292Eb74cbC970547CD49EE356221e0652);
 
     // safe contracts
-    address constant VERIFIER = address(0x1A78584594935D578e664059691fc43c97a56752);
-    address constant PLUGIN = address(0x0D546Ec216815C3fCbD2955324f95847B675B76e);
-    address constant SAFE_ADDRESS = address(0x09143e2b311168BB90abf97BcC8b7Ba7A1aBd308);
-
+    address constant VERIFIER = address(0xeE4E2545928b564a28DcEa68BE629FE88f43B18E);
+    address constant PLUGIN = address(0x327Dce0E5b5BBb7cF9e3A7865005714479A41Ed8);
+    address constant SAFE_ADDRESS = address(0x1367D7E411Df11c261e0Dd5a632c2f5d0245A095);    
+    
     function getContracts()
         internal
         view
@@ -53,7 +53,8 @@ library Constants {
             IRegistry registry,
             ISafeManager manager,
             Safe safe,
-            Plugin plugin
+            Plugin plugin,
+            Groth16Verifier verifier
         )
     {
         weth = Token(WETH_ADDRESS);
@@ -66,6 +67,7 @@ library Constants {
         manager = ISafeManager(SAFE_PROTOCOL_MANAGER);
         safe = Safe(payable(SAFE_ADDRESS));
         plugin = Plugin(payable(PLUGIN));
+        verifier = Groth16Verifier(VERIFIER);
 
         require(isContract(address(weth)), "WETH is not a contract");
         require(isContract(address(dai)), "DAI is not a contract");

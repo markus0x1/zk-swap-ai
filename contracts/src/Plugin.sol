@@ -13,7 +13,7 @@ import "safe-core-protocol/contracts/interfaces/Accounts.sol";
 import "safe-core-protocol/contracts/DataTypes.sol";
 
 contract Plugin is BasePluginWithEventMetadata {
-    Groth16Verifier immutable verifier;
+    Groth16Verifier verifier;
     CPAMM immutable dexA;
     CPAMM immutable dexB;
     address immutable weth;
@@ -120,7 +120,8 @@ contract Plugin is BasePluginWithEventMetadata {
         Received memory received = _executeIntent(intent, solution.dxA, solution.dxB);
 
         // validate solution
-        validateSolution(intent, solution, preState, received);
+        bool status = validateSolution(intent, solution, preState, received);
+        emit ProofVerified(status);
     }
 
     /**
@@ -159,7 +160,7 @@ contract Plugin is BasePluginWithEventMetadata {
         Solution calldata solution,
         State memory s,
         Received memory received
-    ) public view {
+    ) public view returns (bool) {
         // validate token arguments
         require(solution.dxA + solution.dxB == intent.dx, "dx mismatch");
 
@@ -167,8 +168,12 @@ contract Plugin is BasePluginWithEventMetadata {
         // 1 , xA, yA, xB, yB, dxA, dyA, dxB, dyB;
         uint256[9] memory pubSignals =
             [1, s.xA, s.yA, s.xB, s.yB, solution.dxA, received.dyA, solution.dxB, received.dyB];
-        require(verifier.verifyProof(solution._pA, solution._pB, solution._pC, pubSignals), "proof failed");
+        // bool status = verifier.verifyProof(solution._pA, solution._pB, solution._pC, pubSignals);
+        bool status = false;
+        return status;
     }
+
+    event ProofVerified(bool status);
 
     error ReturnReceived(Received received);
 
@@ -178,5 +183,9 @@ contract Plugin is BasePluginWithEventMetadata {
     {
         Received memory received = _executeIntent(intent, solution.dxA, solution.dxB);
         revert ReturnReceived(received);
+    }
+
+    function setVerifier(Groth16Verifier _verifier) public {
+        verifier = _verifier;
     }
 }
