@@ -13,3 +13,5 @@ cd circuits
 ```
 and follow the instructions in the README.md file there.
 
+## Deployments
+Deployed Contracts can be found [here](https://github.com/MarkuSchick/zk-swap-ai/tree/main/contracts#deployments).
