@@ -3,7 +3,15 @@
 ## API
 
 ```text
-/api/swap
+/api/swap {
+    safeAddress: string,
+    inToken: string,
+    outToken: string,
+    dx: bigint,
+    minDy: bigint,
+    nounce: bigint,
+    signature: byte[],
+}
 /api/blockchain/balance
 /api/blockchain/blockNumber
 /api/blockchain/getPrice/:dex // A or B

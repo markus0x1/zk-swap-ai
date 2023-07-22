@@ -1,5 +1,7 @@
-import IERC20 from '../../abis/IERC20.json';
-import CPAMM from '../../abis/CPAMM.json';
+import IERC20Abi from '../../abis/IERC20.json';
+import CPAMMAbi from '../../abis/CPAMM.json';
+import PluginAbi from '../../abis/Plugin.json';
+import Groth16Verifier from '../../abis/Groth16Verifier.json';
 import { ethers, Signer, Contract, formatUnits, formatEther } from 'ethers';
 
 if (!process.env.TENDERLY_FORK_URL) {
@@ -24,6 +26,17 @@ const DEX_B_ADDRESS = process.env.DEX_B_ADDRESS;
 const WETH_ADDRESS = process.env.DEX_A_ADDRESS;
 const DAI_ADDRESS = process.env.DEX_A_ADDRESS;
 
+
+if (!process.env.SAFE_MODULE_ADDRESS) {
+    throw new Error('SAFE_MODULE_ADDRESS is not set');
+}
+const SAFE_MODULE_ADDRESS = process.env.SAFE_MODULE_ADDRESS;
+
+if (!process.env.GROTH16_VERIFIER_ADDRESS) {
+    throw new Error('GROTH16_VERIFIER_ADDRESS is not set');
+}
+const GROTH16_VERIFIER_ADDRESS = process.env.GROTH16_VERIFIER_ADDRESS;
+
 const provider = new ethers.JsonRpcProvider(TENDERLY_FORK_URL);
 
 const wallet = new ethers.Wallet(PRIVATE_KEY, provider)
@@ -36,11 +49,16 @@ const signer = async () => {
     return _signer
 }
 
-const dexBContract = new Contract(DEX_B_ADDRESS, CPAMM.abi, wallet)
-const dexAContract = new Contract(DEX_A_ADDRESS, CPAMM.abi, wallet)
+const dexBContract = new Contract(DEX_B_ADDRESS, CPAMMAbi.abi, wallet)
+const dexAContract = new Contract(DEX_A_ADDRESS, CPAMMAbi.abi, wallet)
 
-const daiErc20Contract = new Contract(DAI_ADDRESS, IERC20.abi, wallet)
-const wethErc20Contract = new Contract(WETH_ADDRESS, IERC20.abi, wallet)
+const moduleContract = new Contract(SAFE_MODULE_ADDRESS, PluginAbi.abi, wallet)
+// const moduleContract = _moduleContract.connect(wallet)
+
+const daiErc20Contract = new Contract(DAI_ADDRESS, IERC20Abi.abi, wallet)
+const wethErc20Contract = new Contract(WETH_ADDRESS, IERC20Abi.abi, wallet)
+
+const verifierContract = new Contract(GROTH16_VERIFIER_ADDRESS, Groth16Verifier.abi, wallet)
 
 export const getBlockNumber = provider.getBlockNumber;
 
@@ -83,18 +101,46 @@ export const getDexState = async (exchange: "A" | "B"): Promise<{
     console.log({ decimals0, decimals1, price, reserve0, reserve1, token0, token1, totalSupply })
 
     return {
-        decimals0: formatUnits(decimals0, decimals0),
-        decimals1: formatUnits(decimals1, decimals1),
-        price: formatUnits(price, decimals0),
-        reserve0: formatUnits(reserve0, decimals0),
-        reserve1: formatUnits(reserve1, decimals1),
+        decimals0: decimals0,
+        decimals1: decimals1,
+        price: price,
+        reserve0: reserve0,
+        reserve1: reserve1,
         token0,
         token1,
-        totalSupply: formatUnits(totalSupply, decimals0)
+        totalSupply: totalSupply,
     }
-
+}
+// struct Solution {
+//     uint256 dxA;
+//     uint256 dxB;
+//     uint256[2] _pA;
+//     uint256[2][2] _pB;
+//     uint256[2] _pC;
+// }
+interface Solution extends Proof {
+    dxA: bigint;
+    dxB: bigint;
 }
 
-const getDex = async (exchange: "A" | "B") => {
+interface Proof {
+    _pA: [bigint, bigint];
+    _pB: [[bigint, bigint], [bigint, bigint]];
+    _pC: [bigint, bigint];
+}
+
+export const tradeWithIntent = (userData: ArrayBuffer, solution: Solution) => {
+    return moduleContract.tradeWithIntent(userData, solution)
+}
+
+export const getDex = async (exchange: "A" | "B") => {
     return exchange === 'A' ? dexAContract : dexBContract;
+}
+
+export const getDy = async (exchange: "A" | "B", dx: bigint) => {
+    return exchange === 'A' ? dexAContract.get_dy(dx) : dexBContract.get_dy(dx);
+}
+
+export const verifyProof = (proof: Proof, publicSignals: string[]) => {
+    return verifierContract.verifyProof(proof._pA, proof._pB, proof._pC, publicSignals)
 }
