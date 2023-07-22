@@ -1,4 +1,5 @@
 export interface UserData {
+        safeAddress: string;
         inToken: string;
         outToken: string;
         dx: bigint;
