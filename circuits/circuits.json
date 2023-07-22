@@ -2,6 +2,7 @@
   "aggregator_128": {
     "file": "aggregator",
     "template": "Aggregator",
+    "pubs": ["xA", "yA", "xB", "yB", "dxA", "dyA", "dxB", "dyB"],
     "params": [128]
   }
 }
