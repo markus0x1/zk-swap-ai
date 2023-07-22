@@ -50,7 +50,6 @@ struct RecordScreen: View {
                         transcript = speechRecognizer.transcript
                         let openAI = OpenAIService()
                         let analyzer = VoiceAnalyzer(openAIService: openAI)
-                        // FIXME: note some of the classes only return dummy data for now (change for production)
                         let res = await analyzer.analyzeText(transcript)
                         print("////OPENAIRES")
                         print(res)

@@ -18,8 +18,7 @@ struct SwapApiSendTxResponse: Decodable {
 }
 
 class SwapApiService {
-    // FIXME:
-    private let apiUrl = ""
+    private let apiUrl = "http://localhost:8545/api/swap"
     /// - param data: params encoded data as hex string
     func sendTx(with data: String) async throws -> SwapApiSendTxResponse? {
         print("Requesting completion for:", data)
