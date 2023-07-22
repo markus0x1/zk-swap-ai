@@ -52,7 +52,7 @@ class OpenAIService {
 private extension OpenAIService {
     static var dummyChoice: OpenAIChoice {
         return OpenAIChoice(
-            text: "\nOutput: {\"inputToken\": \"ETH\", \"inputAmount\": 1, \"outputToken\": \"USDC\"}"
+            text: "\nOutput: {\"inputToken\": \"ETH\", \"inputAmount\": 0.1, \"outputToken\": \"DAI\"}"
         )
     }
     /// Just for testing, to not waste credits
