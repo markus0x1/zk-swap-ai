@@ -33,3 +33,8 @@ copy contracts
 ```bash
 yarn copy-contract
 ```
+
+test
+```bash
+yarn test
+```

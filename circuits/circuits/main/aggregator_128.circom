@@ -3,4 +3,4 @@ pragma circom 2.1.0;
 
 include "../aggregator.circom";
 
-component main = Aggregator(128);
+component main {public[xA, yA, xB, yB, dxA, dyA, dxB, dyB]} = Aggregator(128);
