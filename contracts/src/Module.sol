@@ -78,19 +78,6 @@ contract Module is BasePluginWithEventMetadata {
         uint256 dyB;
     }
 
-    // function approve(address _weth, address _dai, Safe safe) public { // @audit-issue verify caller
-    //     SafeProtocolAction[] memory safeActions = new SafeProtocolAction[](1);
-    //     safeActions[0] = SafeProtocolAction(payable(address(_weth)), 0, abi.encodeCall(ERC20.approve, (address(dexA), type(uint256).max)));
-    //     // safeActions[1] = SafeProtocolAction(payable(address(_weth)), 0, abi.encodeCall(ERC20.approve, (address(dexB), type(uint256).max)));
-
-    //     // safeActions[2] = SafeProtocolAction(payable(address(_dai)), 0, abi.encodeCall(ERC20.approve, (address(dexA), type(uint256).max)));
-    //     // safeActions[3] = SafeProtocolAction(payable(address(_dai)), 0, abi.encodeCall(ERC20.approve, (address(dexB), type(uint256).max)));
-
-    //     SafeTransaction memory safeTransaction = SafeTransaction(safeActions, 0, bytes32(0));
-
-    //     safeProtocolManager.executeTransaction(ISafe(address(safe)),safeTransaction);
-    // }
-
     function executeIntent(UserData calldata intent, uint256 dxA, uint256 dxB)
         public
         returns (Received memory received)
