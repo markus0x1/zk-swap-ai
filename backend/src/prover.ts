@@ -25,7 +25,6 @@ const N = 128;
 export const generateProof = async (input: CircuitInput): Promise<[Proof, string[]]> => {
     const circuit = await circomkit.ProofTester(`aggregator_${N}`);
     const { proof, publicSignals } = await circuit.prove(input);
-    console.log({ proof })
     const sigma = proof as { pi_a: [string, string, string], pi_b: [[string, string], [string, string]], pi_c: [string, string, string] }
     await circuit.expectPass(proof, publicSignals);
     return [

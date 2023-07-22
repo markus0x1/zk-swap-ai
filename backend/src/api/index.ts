@@ -4,6 +4,7 @@ import { findOptimalPath as findOptimalTrade } from '../pathfinder';
 import { getDexState, getDy, tradeWithIntent } from '../ethereum';
 import { generateProof } from '../prover';
 import { Solution } from '../types/UserData';
+import { formatUnits } from 'ethers';
 
 const router = express.Router();
 
@@ -39,11 +40,7 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
     minDy: BigInt(req.body.minDy),
   };
 
-  const dexA = await getDexState('A');
-  const dexB = await getDexState('B');
-
-  const estimatedDyA = await getDy('A', dx, inToken);
-  const estimatedDyB = await getDy('B', dx, inToken);
+  const [dexA, dexB, estimatedDyA, estimatedDyB] = await Promise.all([getDexState('A'), getDexState('B'), getDy('A', dx, inToken), getDy('B', dx, inToken)]);
 
   const { dxA, dxB, dyA, dyB } = findOptimalTrade(
     dexA,
@@ -58,6 +55,7 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
   const xB = BigInt(dexB.reserve0);
   const yB = BigInt(dexB.reserve1);
 
+  console.log("Generating proof for trade", { xA, yA, xB, yB, dxA, dxB, dyA, dyB })
   const [proof] = await generateProof({
     xA,
     yA,
@@ -68,14 +66,14 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
     dyA,
     dyB,
   });
+  console.log({ proof })
 
   const solution: Solution = { dxA, dxB, ...proof };
   const userData = { safe: safeAddress, ...trade, nonce, signature };
+  console.log("Trade with intent", { userData, solution })
   const recipt = await tradeWithIntent(userData, solution);
   const receiptResponse = await recipt.wait();
-  console.log({ receiptResponse })
-
-  res.json({ recipt });
+  res.json({ txHash: receiptResponse.hash, amountIn: formatUnits(dx, dexA.decimals0),  amountOut: dyA > dyB ? formatUnits(dyA, dexA.decimals1) : formatUnits(dyB, dexB.decimals1) });
 });
 
 router.use('/blockchain', blockchain);
