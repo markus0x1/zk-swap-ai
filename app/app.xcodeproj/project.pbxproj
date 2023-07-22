@@ -23,6 +23,7 @@
 		6967AA092A6BC9ED004E37EE /* metamask-ios-sdk in Frameworks */ = {isa = PBXBuildFile; productRef = 6967AA082A6BC9ED004E37EE /* metamask-ios-sdk */; };
 		6967AA0B2A6BC9FE004E37EE /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6967AA0A2A6BC9FE004E37EE /* ConnectionManager.swift */; };
 		6967AA0F2A6C09AC004E37EE /* SwapApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6967AA0E2A6C09AC004E37EE /* SwapApiService.swift */; };
+		6967AA122A6C1A79004E37EE /* Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6967AA112A6C1A79004E37EE /* Buttons.swift */; };
 		A657625F2A6B3515002A06CB /* WalletConnectModal in Frameworks */ = {isa = PBXBuildFile; productRef = A657625E2A6B3515002A06CB /* WalletConnectModal */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 		6951EC9D2A6B02E20002B5D2 /* TransactionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionManager.swift; sourceTree = "<group>"; };
 		6967AA0A2A6BC9FE004E37EE /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		6967AA0E2A6C09AC004E37EE /* SwapApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapApiService.swift; sourceTree = "<group>"; };
+		6967AA112A6C1A79004E37EE /* Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buttons.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 		6951EC8B2A6B00F20002B5D2 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				6967AA102A6C1A69004E37EE /* components */,
 				6951EC912A6B027F0002B5D2 /* RecordScreen.swift */,
 				6951EC932A6B028B0002B5D2 /* ConfirmationScreen.swift */,
 				6951EC952A6B02970002B5D2 /* SuccessScreen.swift */,
@@ -120,6 +123,14 @@
 				6951EC972A6B02C50002B5D2 /* VoiceRecordingManager.swift */,
 			);
 			path = shared;
+			sourceTree = "<group>";
+		};
+		6967AA102A6C1A69004E37EE /* components */ = {
+			isa = PBXGroup;
+			children = (
+				6967AA112A6C1A79004E37EE /* Buttons.swift */,
+			);
+			path = components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,6 +218,7 @@
 				6951EC962A6B02970002B5D2 /* SuccessScreen.swift in Sources */,
 				6951EC942A6B028B0002B5D2 /* ConfirmationScreen.swift in Sources */,
 				6967AA0F2A6C09AC004E37EE /* SwapApiService.swift in Sources */,
+				6967AA122A6C1A79004E37EE /* Buttons.swift in Sources */,
 				6951EC982A6B02C50002B5D2 /* VoiceRecordingManager.swift in Sources */,
 				6951EC9A2A6B02D00002B5D2 /* VoiceAnalyzer.swift in Sources */,
 				6951EC922A6B027F0002B5D2 /* RecordScreen.swift in Sources */,
