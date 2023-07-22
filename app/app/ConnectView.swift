@@ -16,17 +16,18 @@ struct ConnectView: View {
     @State private var isPresented = false
     var body: some View {
         VStack {
-            Button("Connect") {
+            Button {
                 Task {
                     walletConnectManager.setup()
                     WalletConnectModal.present()
                     try await walletConnectManager.listenToSession()
+                    isPresented = true
                 }
-            }
-            Button("Sign Data") {
-                Task {
-                    try await walletConnectManager.signData()
-                }
+            } label: {
+                Image("walletConnect")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 252)
             }
             Button(action: {
                 connectionManager.ethereum.connect(connectionManager.dappMetamask)?.sink(receiveCompletion: { completion in
