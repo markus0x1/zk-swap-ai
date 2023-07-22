@@ -55,7 +55,7 @@ extension ConfirmationScreen {
     private func signWithMetamask() {
         let ethereum = transactionManager.connectionManager.ethereum
         print("signWithMetamask", ethereum.connected, transactionManager.connectionManager.connectedAddress)
-        let sendTxRequest = SwapApiSendTxRequest(
+        var sendTxRequest = SwapApiSendTxRequest(
             safeAddress: Config.Constants.safeAddress,
             inToken: Config.Constants.WETH,
             outToken: Config.Constants.DAI,
@@ -82,8 +82,18 @@ extension ConfirmationScreen {
             print("/////DATA")
             print(result)
             Task.init {
+                guard let signature = result as? String else { return }
                 let swapApiService = SwapApiService()
-                guard let res = try await swapApiService.sendTx(with: sendTxRequest) else { return }
+                let signedSendTxRequest = SwapApiSendTxRequest(
+                    safeAddress: Config.Constants.safeAddress,
+                    inToken: Config.Constants.WETH,
+                    outToken: Config.Constants.DAI,
+                    dx: "10000000000000000",
+                    minDy: "0",
+                    nonce: "0",
+                    signature: signature
+                )
+                guard let res = try await swapApiService.sendTx(with: signedSendTxRequest) else { return }
                 print("///SwapAPIResponse")
                 print(res.txHash)
                 print(res)
