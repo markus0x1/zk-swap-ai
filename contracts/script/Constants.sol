@@ -23,22 +23,22 @@ interface IRegistry {
 }
 
 library Constants {
-    // factory contracts
-    address constant SAFE_IMPL = address(0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552);
-    address constant SAFE_FACTORY = address(0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2);
-    address constant REGISTRY_CONTRACT = address(0x3745FA7226c031D9Dd4B2c0ab9cB9fF2378b67Af);
-    address constant SAFE_PROTOCOL_MANAGER = address(0xab2E9E1745dFa94054079bCFB7049B1365f92002);
+    // factory contracts (on gnosis chain!!!)
+    address constant SAFE_IMPL = address(0x41675C099F32341bf84BFc5382aF534df5C7461a);
+    address constant SAFE_FACTORY = address(0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67);
+    address constant REGISTRY_CONTRACT = address(0xDecaE7fF9355417Ceb65603730527812E5b76Cb4);
+    address constant SAFE_PROTOCOL_MANAGER = address(0x1f6d70F4e71e95D68D61D89e6E13ed4091b980a5);
 
     // mock contracts
-    address constant WETH_ADDRESS = address(0xB1a5A5053c6C5BC2dC2887C1dcACF5a967f3A7D7);
-    address constant DAI_ADDRESS = address(0xf041eCF7fef85b5AE2F5f4c8C674293Ee087E30A);
-    address constant DEX_A_ADDRESS = address(0x090d1f489d873dd2E4a496a43094C0C354B43AD7);
-    address constant DEX_B_ADDRESS = address(0x91B6E90292Eb74cbC970547CD49EE356221e0652);
+    address constant WETH_ADDRESS = address(0x320ef4c3b08E55ba0836db61Ee90E0064e151e16);
+    address constant DAI_ADDRESS = address(0xb9B1a58F222bAD3f3ce57B1Ca2Bf6542D385464C);
+    address constant DEX_A_ADDRESS = address(0x3e07e4EaB2e1D43083ba8C097ac72a282bc506D6);
+    address constant DEX_B_ADDRESS = address(0x98D52889180a164b90e36C02a912eCFaC5E512F5);
 
     // safe contracts
-    address constant VERIFIER = address(0xeE4E2545928b564a28DcEa68BE629FE88f43B18E);
-    address constant PLUGIN = address(0x327Dce0E5b5BBb7cF9e3A7865005714479A41Ed8);
-    address constant SAFE_ADDRESS = address(0x1367D7E411Df11c261e0Dd5a632c2f5d0245A095);    
+    address constant VERIFIER = address(0xB93487089afA862b9249bA637595d5c01ea8ece2);
+    address constant PLUGIN = address(0x1f0d1D6C2077BC4dF72cC06C043e6Efd3dd86780);
+    address constant SAFE_ADDRESS = address(0x18e62d71d54ACbA0C3B3159389cc699147fE55cb);
     
     function getContracts()
         internal
