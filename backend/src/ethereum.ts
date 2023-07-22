@@ -24,8 +24,15 @@ if (!process.env.DEX_B_ADDRESS) {
 const DEX_A_ADDRESS = process.env.DEX_A_ADDRESS;
 const DEX_B_ADDRESS = process.env.DEX_B_ADDRESS;
 
-const WETH_ADDRESS = process.env.DEX_A_ADDRESS;
-const DAI_ADDRESS = process.env.DEX_A_ADDRESS;
+if (!process.env.WETH_ADDRESS) {
+    throw new Error('WETH_ADDRESS is not set');
+}
+export const WETH_ADDRESS = process.env.WETH_ADDRESS;
+
+if (!process.env.DAI_ADDRESS) {
+    throw new Error('DAI_ADDRESS is not set');
+}
+export const DAI_ADDRESS = process.env.DAI_ADDRESS;
 
 
 if (!process.env.SAFE_MODULE_ADDRESS) {
@@ -138,8 +145,8 @@ export const getDex = async (exchange: "A" | "B") => {
     return exchange === 'A' ? dexAContract : dexBContract;
 }
 
-export const getDy = async (exchange: "A" | "B", dx: bigint) => {
-    return exchange === 'A' ? dexAContract.get_dy(dx) : dexBContract.get_dy(dx);
+export const getDy = async (exchange: "A" | "B", dx: bigint, inToken: string) => {
+    return exchange === 'A' ? dexAContract.get_dy(dx, inToken) : dexBContract.get_dy(dx, inToken);
 }
 
 export const verifyProof = (proof: Proof, publicSignals: string[]) => {

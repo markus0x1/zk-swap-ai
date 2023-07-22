@@ -24,9 +24,17 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
   const dx = BigInt(req.body.dx)
   const safeAddress = req.body.safeAddress;
   const nounce = req.body.nounce;
+  if (!req.body.inToken.startsWith("0x")) {
+    return res.status(400).json({ error: "inToken must start with 0x" })
+  }
+  if (!req.body.outToken.startsWith("0x")) {
+    return res.status(400).json({ error: "outToken must start with 0x" })
+  }
+  const inToken = req.body.inToken;
+  const outToken = req.body.outToken;
   const trade = {
-    inToken: req.body.inToken,
-    outToken: req.body.outToken,
+    inToken,
+    outToken,
     dx: dx,
     minDy: BigInt(req.body.minDy),
   }
@@ -34,8 +42,8 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
   const dexA = await getDexState("A")
   const dexB = await getDexState("B")
 
-  const estimatedDyA = await getDy("A", dx)
-  const estimatedDyB = await getDy("B", dx)
+  const estimatedDyA = await getDy("A", dx, inToken)
+  const estimatedDyB = await getDy("B", dx, inToken)
 
   const { dxA, dxB, dyA, dyB } = findOptimalTrade(dexA, dexB, estimatedDyA, estimatedDyB, trade)
 
