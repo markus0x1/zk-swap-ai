@@ -12,7 +12,7 @@ import {ExecutableMockContract} from "safe-core-protocol-demo/contracts/contract
 // reference:
 // https://book.getfoundry.sh/tutorials/solidity-scripting
 
-    
+// 1 DEPLOY MOCK CONTRACTS
 contract DeployMock is Script {
     uint256 privateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(privateKey);
@@ -47,30 +47,67 @@ contract DeployMock is Script {
     }
 }
 
-
-contract DeploySafe is Script {
-    //external dependencies
-    uint256 constant SALT = 456445645686456485346;
- 
-    // setup 
+// 1 DEPLOY PLUGIN
+contract DeployPlugin is Script {
+    // setup
     uint256 privateKey = vm.envUint("PRIVATE_KEY");
     address deployer = vm.addr(privateKey);
     address[] owners = [deployer];
 
     function run() external {
-        (Token weth, Token dai, CPAMM dexA, CPAMM dexB, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager safeProtocolManager,  ) = Constants.getContracts();
- 
+        (Token weth, Token dai, CPAMM dexA, CPAMM dexB,,,, ISafeManager safeProtocolManager,,) =
+            Constants.getContracts();
+
         vm.startBroadcast(privateKey);
 
-        // deploy plugin
-        address mockPlugin = address(new ExecutableMockContract());
-        registry.addIntegration(mockPlugin, IntegrationType.Plugin);
+        // deploy verifier contract
+        Groth16Verifier verifier = new Groth16Verifier();
+        Module module = new Module(dexA, dexB, address(weth), address(dai), verifier, safeProtocolManager);
+
+        vm.stopBroadcast();
+
+        console.log("address constant VERIFIER = address(%s);", address(verifier));
+        console.log("address constant MODULE = address(%s);", address(module));
+    }
+}
+
+// 2 DEPLOY SAFE
+
+contract DeploySafe is Script {
+    //external dependencies
+    uint256 constant SALT = 45545644564568645645655685346;
+
+    // setup
+    uint256 privateKey = vm.envUint("PRIVATE_KEY");
+    address deployer = vm.addr(privateKey);
+    address[] owners = [deployer];
+
+    function run() external {
+        (
+            Token weth,
+            Token dai,
+            CPAMM dexA,
+            CPAMM dexB,
+            Safe impl,
+            SafeProxyFactory factory,
+            IRegistry registry,
+            ISafeManager safeProtocolManager,
+            ,Module module
+        ) = Constants.getContracts();
+
+        vm.startBroadcast(privateKey);
+
 
         // create safe prpxy
         bytes memory initializer = new bytes(0);
         SafeProxy proxy = factory.createProxyWithNonce(address(impl), initializer, SALT);
 
-        // setup safe
+        // 3. List the hook
+        address mockPlugin = address(module);
+        registry.addIntegration(mockPlugin, IntegrationType.Plugin);
+
+
+        // 1., 2., 4. Deploy a Safe && call enableModule
         DeployManager deploymanager = new DeployManager(IERC20(address(weth)), IERC20(address(dai)), dexA, dexB);
         Safe safe = Safe(payable(proxy));
         safe.setup(
@@ -84,35 +121,9 @@ contract DeploySafe is Script {
             payable(0) // paymentReceiver)
         );
 
+
         vm.stopBroadcast();
 
         console.log("address constant SAFE_ADDRESS = address(%s);", address(safe));
-
-    }
-}
-
-
-
-contract DeployModule is Script { 
-    // setup 
-    uint256 privateKey = vm.envUint("PRIVATE_KEY");
-    address deployer = vm.addr(privateKey);
-    address[] owners = [deployer];
-
-    function run() external {
-        (Token weth, Token dai, CPAMM dexA, CPAMM dexB, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager safeProtocolManager, Safe safe ) = Constants.getContracts();
- 
-        vm.startBroadcast(privateKey);
-    
-        // deploy verifier contract
-        Groth16Verifier verifier = new Groth16Verifier();
-        Module module = new Module(dexA, dexB, address(weth), address(dai), verifier, safeProtocolManager);
-
-
-        vm.stopBroadcast();
-
-        console.log("address constant VERIFIER = address(%s);", address(verifier));
-        console.log("address constant MODULE = address(%s);", address(module));
-
     }
 }

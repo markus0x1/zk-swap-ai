@@ -7,7 +7,7 @@ import "safe-contracts/contracts/Safe.sol";
 import "safe-contracts/contracts/proxies/SafeProxyFactory.sol";
 import "safe-contracts/contracts/Safe.sol";
 import "../src/DeployManager.sol";
-
+import "../src/Module.sol";
 
 import "forge-std/Vm.sol";
 
@@ -22,7 +22,6 @@ interface IRegistry {
     function addIntegration(address integration, IntegrationType integrationType) external;
 }
 
-
 library Constants {
     address constant WETH_ADDRESS = address(0x1684F4DF5e32a946fBbaEb3059353c83Ff075E31);
     address constant DAI_ADDRESS = address(0xDAFA240382BE6e8Fb5b13D1516d3d220Cf5A1622);
@@ -32,13 +31,25 @@ library Constants {
     address constant SAFE_FACTORY = address(0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2);
     address constant REGISTRY_CONTRACT = address(0x3745FA7226c031D9Dd4B2c0ab9cB9fF2378b67Af);
     address constant SAFE_PROTOCOL_MANAGER = address(0xab2E9E1745dFa94054079bCFB7049B1365f92002);
-    address constant SAFE_ADDRESS = address(0xF34f2AC034cC16d31f0EAe2c05E69359579032fa);
-    address constant MODULE = address(0x1911B66711161807bD6E0078364Bf04Ac60F7b95);
-    
+    address constant VERIFIER = address(0x617c8c988fE90BE27a00E7ed2197e9A70d5b6847);
+    address constant MODULE = address(0x90FF66e76e0f7f80Fd0a321190865b8D4f82C9b0);
+    address constant SAFE_ADDRESS = address(0x659803C83d48D9377E3314444B12cF4be0cE7B23);
+
     function getContracts()
         internal
         view
-        returns (Token weth, Token dai, CPAMM dexA, CPAMM dexB, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager manager, Safe safe )
+        returns (
+            Token weth,
+            Token dai,
+            CPAMM dexA,
+            CPAMM dexB,
+            Safe impl,
+            SafeProxyFactory factory,
+            IRegistry registry,
+            ISafeManager manager,
+            Safe safe,
+            Module module
+        )
     {
         weth = Token(WETH_ADDRESS);
         dai = Token(DAI_ADDRESS);
@@ -47,9 +58,9 @@ library Constants {
         impl = Safe(payable(SAFE_IMPL));
         factory = SafeProxyFactory(SAFE_FACTORY);
         registry = IRegistry(REGISTRY_CONTRACT);
-        manager = ISafeManager(address(0xab2E9E1745dFa94054079bCFB7049B1365f92002));
+        manager = ISafeManager(SAFE_PROTOCOL_MANAGER);
         safe = Safe(payable(SAFE_ADDRESS));
-
+        module = Module(payable(MODULE));
 
         require(isContract(address(weth)), "WETH is not a contract");
         require(isContract(address(dai)), "DAI is not a contract");

@@ -41,8 +41,6 @@ contract DeployManager is Safe {
         dexA = _dexA;
         dexB = _dexB;
     }
-        
-        
 
     function deployEnableModule(address module) public {
         // Module address cannot be null or sentinel.
@@ -51,10 +49,10 @@ contract DeployManager is Safe {
         require(modules[module] == address(0), "GS102");
         modules[module] = modules[SENTINEL_MODULES];
         modules[SENTINEL_MODULES] = module;
-        emit EnabledModule(module);        
+        emit EnabledModule(module);
     }
 
-    function enablePlugins(ISafeManager manager, address plugin ) public returns (bool) {
+    function enablePlugins(ISafeManager manager, address plugin) public returns (bool) {
         deployEnableModule(address(manager));
         manager.enablePlugin(plugin, false);
 
@@ -62,7 +60,7 @@ contract DeployManager is Safe {
         dai.approve(address(dexA), type(uint256).max);
         weth.approve(address(dexB), type(uint256).max);
         weth.approve(address(dexB), type(uint256).max);
-        
+
         return true;
     }
 }
