@@ -1,5 +1,9 @@
 # Use [template](https://github.com/erhant/circomkit-examples)
 
+install 
+```bash
+yarn install
+```
 compile
 ```bash
 yarn compile
