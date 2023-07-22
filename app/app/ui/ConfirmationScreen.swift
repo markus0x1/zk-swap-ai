@@ -9,10 +9,12 @@ import Combine
 import Foundation
 import metamask_ios_sdk
 import SwiftUI
+import WalletConnectModal
 
 struct ConfirmationScreen: View {
     let transactionManager: TransactionManager
     @State private var cancellables: Set<AnyCancellable> = []
+    @State private var publishers: Set<AnyCancellable> = []
     @State private var isPresented = false
     var body: some View {
         ZStack() {
@@ -50,99 +52,107 @@ struct ConfirmationScreen: View {
 
 extension ConfirmationScreen {
 
-    private func signWithWalletConnect() {}
+    /// work in progress - not tested
+    private func signWithWalletConnect() {
+        // Create a signing request
+//        let uri = try await Pair.instance.create()
+//        try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
+        Sign.instance.sessionsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { (sessions: [Session]) in
+                Task.init {
+                    do {
+                        let sendTxRequest = SwapApiSendTxRequest(
+                            safeAddress: Config.Constants.safeAddress,
+                            inToken: Config.Constants.WETH,
+                            outToken: Config.Constants.DAI,
+                            dx: "10000000000000000",
+                            minDy: "0",
+                            nonce: "0",
+                            signature: "0x000000000000000000000000000000000000dead"
+                        )
+                        guard let json = try? JSONEncoder().encode(sendTxRequest) else { return }
+                        let msg = json.toHexString()
+                        // TODO: create request on the "dapp" side to sign data
+                        let chainId = "0x5"
+                        let method = "personal_sign"
+                        // TODO: get connect address
+                        let walletAddress = "0x9b2055d370f73ec7d8a03e965129118dc8f5bf83" // This should match the connected address
+                        let requestParams = AnyCodable([msg, walletAddress])
+                        let request = Request(topic: "session.topic", method: method, params: requestParams, chainId: Blockchain(chainId)!)
+                        try await Sign.instance.request(params: request)
+                    } catch {
+                        print("Error sending signing request for WalletConnect", error)
+                    }
+                }
+            }.store(in: &publishers)
+        // Receive singing proposals
+        Sign.instance.sessionProposalPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { session in
+//                self.verifyDapp(session.context)
+//                self.showSessionProposal(session.proposal)
+            }.store(in: &publishers)
+        // TODO: approve session
+//        Sign.instance.approve(
+//            proposalId: "proposal_id",
+//            namespaces: sessionNamespaces
+//        )
+        // TODO: get signed data and add signature to API request
+        // TODO: call API with assembled data (as in Metamask example below)
+    }
 
     private func signWithMetamask() {
-        do {
-            // TODO: only forward once tx is done?
-            // TODO: pass tx information (to display on next screen)?
-            
-            let ethereum = transactionManager.connectionManager.ethereum
-            print("signAndSend", ethereum.connected, transactionManager.connectionManager.connectedAddress)
-            
-            // Create parameters
-            //                let parameters: [String: String] = [
-            //                    "to": "0x...", // receiver address
-            //                    "from": ethereum.selectedAddress, // sender address
-            //                    "value": "0x..." // amount
-            //                  ]
-            //
-            //                let signV4Params: [String: [String: String]] = [
-            //                    "domain": [
-            //                        "chainId": "5",
-            //                        "name": "SwapAI",
-            //                        "verifyingContract": "",
-            //                        "version": "1"
-            //                    ],
-            //                    "message": [
-            //                        //                "from": "0xb386B8923434D9DAF9C97AF35afEDea3C93160bF"
-            //                        "safe": "0xCe79d02774B7432E023122D9189D295d189B1cc8",
-            //                        "inToken": "0x1684F4DF5e32a946fBbaEb3059353c83Ff075E31", // WETH
-            //                        "outToken": "0xDAFA240382BE6e8Fb5b13D1516d3d220Cf5A1622", // DAI
-            //                        "dx": "10000000000000000",
-            ////         don't send this
-            //                        "minDy": "9900000000000000"
-            //    ]
-            //                ]
-            
-            // Create request
-            //        let transactionRequest = EthereumRequest(
-            //            method: .ethSendTransaction,
-            //            params: [parameters] // eth_sendTransaction expects an array parameters object
-            //            )
-            
-            // Create request
-            //                        let transactionRequest = EthereumRequest(
-            //                            method: .ethSignTypedDataV4,
-            //                            // TODO: get address: 0xb386B8923434D9DAF9C97AF35afEDea3C93160bF
-            //                            params: [signV4Params]
-            //                        )
-            //
-            
-            let from = "0xb386B8923434D9DAF9C97AF35afEDea3C93160bF"
-            let msg = "0xb386B8923434D9DAF9C97AF35afEDea3C93160bF"
-            let transactionRequest = EthereumRequest(
-                method: .personalSign,
-                // TODO: get address: 0xb386B8923434D9DAF9C97AF35afEDea3C93160bF
-                params: [msg, from]
-            )
-            
-            
-            // Make a transaction request
-            ethereum.request(transactionRequest)?.sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error):
-                    print("Error sending transaction request, \(error.localizedDescription)")
-                default: break
-                }
-            }, receiveValue: { result in
-                print("/////DATA")
-                // TODO: send to API
-                print(result)
-                Task.init {
-                    let swapApiService = SwapApiService()
-                    let sendTxRequest = SwapApiSendTxRequest(
-                        safeAddress: Config.Constants.safeAddress,
-                        inToken: Config.Constants.WETH,
-                        outToken: Config.Constants.DAI,
-                        dx: "10000000000000000",
-                        minDy: "0",
-                        nonce: "0",
-                        signature: "0x000000000000000000000000000000000000dead"
-                    )
-                    let res = try await swapApiService.sendTx(with: sendTxRequest)
-                    print(res)
-                }
-                // TODO: get tx.hash in return?
+        let ethereum = transactionManager.connectionManager.ethereum
+        print("signWithMetamask", ethereum.connected, transactionManager.connectionManager.connectedAddress)
+        let sendTxRequest = SwapApiSendTxRequest(
+            safeAddress: Config.Constants.safeAddress,
+            inToken: Config.Constants.WETH,
+            outToken: Config.Constants.DAI,
+            dx: "10000000000000000",
+            minDy: "0",
+            nonce: "0",
+            signature: "0x000000000000000000000000000000000000dead"
+        )
+        guard let json = try? JSONEncoder().encode(sendTxRequest) else { return }
+        let from = ethereum.selectedAddress
+        let msg = json.toHexString()
+        print(msg)
+        let transactionRequest = EthereumRequest(
+            method: .personalSign,
+            params: [msg, from]
+        )
+        ethereum.request(transactionRequest)?.sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure(let error):
+                print("Error sending metamask transaction request, \(error.localizedDescription)")
+            default: break
+            }
+        }, receiveValue: { result in
+            print("/////DATA")
+            print(result)
+            Task.init {
+                guard let signature = result as? String else { return }
+                let swapApiService = SwapApiService()
+                let signedSendTxRequest = SwapApiSendTxRequest(
+                    safeAddress: Config.Constants.safeAddress,
+                    inToken: Config.Constants.WETH,
+                    outToken: Config.Constants.DAI,
+                    dx: "10000000000000000",
+                    minDy: "0",
+                    nonce: "0",
+                    signature: signature
+                )
+                guard let res = try await swapApiService.sendTx(with: signedSendTxRequest) else { return }
+                print("///SwapAPIResponse")
+                print(res.txHash)
+                print(res)
+                transactionManager.outputTokenAmount = res.amountOut
                 // TODO: wait for tx to finish?
-            })
-            .store(in: &cancellables)
-            
-            //TODO:
-            isPresented = true
-        } catch {
-            print("Error sending tx", error)
-        }
+                isPresented = true
+            }
+        })
+        .store(in: &cancellables)
     }
 }
 
@@ -151,4 +161,3 @@ struct ConfirmationScreen_Previews: PreviewProvider {
         ConfirmationScreen(transactionManager: TransactionManager(connectionManager: ConnectionManager()))
     }
 }
-

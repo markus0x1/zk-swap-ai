@@ -17,10 +17,9 @@ struct SwapApiSendTxRequest: Encodable {
     let signature: String
 }
 
-// TODO:
 struct SwapApiSendTxResponse: Decodable {
     let amountOut: String
-    // TODO:
+    let txHash: String
 }
 
 class SwapApiService {

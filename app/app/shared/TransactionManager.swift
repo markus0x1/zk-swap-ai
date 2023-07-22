@@ -10,9 +10,8 @@ import Foundation
 class TransactionManager {
     let connectionManager: ConnectionManager
     private (set) var voiceResponse: VoiceAnalyzerResponse?
-
     private (set) var outputTokenSymbol: String = "DAI"
-    private (set) var outputTokenAmount: String = "189.5"
+    var outputTokenAmount: String = "189.5"
 
     init(connectionManager: ConnectionManager) {
         self.connectionManager = connectionManager

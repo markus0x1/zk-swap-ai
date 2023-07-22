@@ -32,17 +32,14 @@ struct SuccessScreen: View {
 struct BlurredGradientCircle: View {
     var body: some View {
         ZStack {
-            // Create a gradient
             RadialGradient(
                 gradient: Gradient(colors: [Color.purple, Color.blue, Color.orange]),
                 center: .topTrailing,
                 startRadius: 20,
                 endRadius: 200
             )
-            // Apply a blur effect
-            .blur(radius: 50) // Adjust the blur radius as needed
+            .blur(radius: 50)
         }
-        // Use an appropriate size for the circle
         .frame(width: 400, height: 200)
         .opacity(0.4)
     }
