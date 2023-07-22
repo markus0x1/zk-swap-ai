@@ -10,28 +10,27 @@ const router = express.Router();
 type Address = string;
 
 type SwapRequest = {
+  safeAddress: Address,
   inToken: Address,
   outToken: Address,
-  dx: bigint,
-  minDy: bigint,
+  dx: string,
+  minDy: string,
+  nounce: string,
   signature: ArrayBuffer,
 }
-router.post<SwapRequest, { }>('/swap', async (req, res) => {
+router.post<SwapRequest, {}>('/swap', async (req, res) => {
 
-  const {
-    inToken,
-    outToken,
-    dx,
-    minDy,
-    signature,
-  }: SwapRequest = req.body;
-
+  const signature = req.body.signature
+  const dx = BigInt(req.body.dx)
+  const safeAddress = req.body.safeAddress;
+  const nounce = req.body.nounce;
   const trade = {
-    inToken,
-    outToken,
-    dx,
-    minDy,
-  } 
+    inToken: req.body.inToken,
+    outToken: req.body.outToken,
+    dx: dx,
+    minDy: BigInt(req.body.minDy),
+  }
+
   const dexA = await getDexState("A")
   const dexB = await getDexState("B")
 
@@ -48,7 +47,8 @@ router.post<SwapRequest, { }>('/swap', async (req, res) => {
   const [proof] = await generateProof({ xA: xA, yA: yA, xB: xB, yB: yB, dxA, dxB, dyA, dyB })
 
   const solution: Solution = { dxA, dxB, ...proof }
-  const recipt = await tradeWithIntent(signature, solution)
+  const userData = { safeAddress, ...trade , nounce, signature }
+  const recipt = await tradeWithIntent(userData, solution)
   await recipt.wait()
 
   res.json({ recipt });

@@ -3,6 +3,7 @@ import CPAMMAbi from '../../abis/CPAMM.json';
 import PluginAbi from '../../abis/Plugin.json';
 import Groth16Verifier from '../../abis/Groth16Verifier.json';
 import { ethers, Signer, Contract, formatUnits, formatEther } from 'ethers';
+import { UserData } from './types/UserData';
 
 if (!process.env.TENDERLY_FORK_URL) {
     throw new Error('TENDERLY_FORK_URL is not set');
@@ -129,7 +130,7 @@ interface Proof {
     _pC: [bigint, bigint];
 }
 
-export const tradeWithIntent = (userData: ArrayBuffer, solution: Solution) => {
+export const tradeWithIntent = (userData: UserData, solution: Solution) => {
     return moduleContract.tradeWithIntent(userData, solution)
 }
 

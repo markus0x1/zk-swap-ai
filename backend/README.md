@@ -4,13 +4,13 @@
 
 ```text
 /api/swap {
-    safeAddress: string,
-    inToken: string,
-    outToken: string,
-    dx: bigint,
-    minDy: bigint,
-    nounce: bigint,
-    signature: byte[],
+  safeAddress: Address,
+  inToken: Address,
+  outToken: Address,
+  dx: string,
+  minDy: string,
+  nounce: string,
+  signature: ArrayBuffer,
 }
 /api/blockchain/balance
 /api/blockchain/blockNumber
