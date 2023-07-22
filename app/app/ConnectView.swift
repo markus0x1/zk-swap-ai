@@ -8,39 +8,72 @@
 import Combine
 import SwiftUI
 import WalletConnectModal
+import WalletConnectRelay
+
+
+//extension WebSocket: WebSocketConnecting { }
+
+struct NativeSocketFactory: WebSocketFactory {
+    
+    func create(with url: URL) -> WebSocketConnecting {
+        return NativeSocket(withURL: url)
+    }
+}
 
 struct ConnectView: View {
-    @ObservedObject private var connectionManager = ConnectionManager()
+    
+    @State var isConnected = false
+    @ObservedObject private var walletConnectManager = WalletConnectManager()
+//    @ObservedObject private var connectionManager = ConnectionManager()
     @State private var cancellables: Set<AnyCancellable> = []
     @State private var isPresented = false
     var body: some View {
         VStack {
-            Button("Connect") {
-                isPresented = true
+            Button("SignData") {
+                Task {
+                    try await walletConnectManager.signData()
+                }
+                
             }
-            Button(action: {
-                connectionManager.ethereum.connect(connectionManager.dappMetamask)?.sink(receiveCompletion: { completion in
-                    switch completion {
-                    case let .failure(error):
-                        print("Error connecting to Metamask: \(error.localizedDescription)")
-                    default: break
-                    }
-                }, receiveValue: { result in
-                    print("Metamask connection result: \(result)")
-                }).store(in: &cancellables)
-            }) {
-                Image("metamask")
-                    .resizable()
-                    .frame(width: 252, height: 80)
+            Text(walletConnectManager.connectedWallet)
+            Button(walletConnectManager.connectedWallet.isEmpty ? "Connect" : "Disconnect") {
+                Networking.configure(projectId: "66e129e35de063e88a1f05631fe77edb", socketFactory: NativeSocketFactory())
+                
+                let metadata = AppMetadata(
+                                    name: "Example Wallet",
+                                    description: "Wallet description",
+                                    url: "example.wallet",
+                                    icons: ["https://avatars.githubusercontent.com/u/37784886"]
+                                )
+                Pair.configure(metadata: metadata)
+                
+                let methods: Set<String> = ["eth_sendTransaction", "personal_sign", "eth_signTypedData"]
+                let events: Set<String> = ["chainChanged", "accountsChanged"]
+                let blockchains: Set<Blockchain> = [Blockchain("eip155:1")!]
+                let namespaces: [String: ProposalNamespace] = [
+                    "eip155": ProposalNamespace(
+                        chains: blockchains,
+                        methods: methods,
+                        events: events
+                    )
+                ]
+
+                let defaultSessionParams =  SessionParams(
+                                                requiredNamespaces: namespaces,
+                                                optionalNamespaces: nil,
+                                                sessionProperties: nil
+                                            )
+                WalletConnectModal.configure(projectId: "66e129e35de063e88a1f05631fe77edb", metadata: metadata,
+                                             sessionParams: defaultSessionParams)
+                WalletConnectModal.present()
+                Task {
+                    try await walletConnectManager.listenToSession()
+                }
             }
-            .padding()
         }
         .padding()
         .navigationDestination(isPresented: $isPresented) {
             RecordScreen()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .MetamaskConnection)) { notification in
-            print(notification.userInfo?["value"] as? String ?? "Offline")
         }
     }
 }
