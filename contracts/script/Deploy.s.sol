@@ -35,7 +35,7 @@ contract DeployMock is Script {
         dai.approve(address(dexA), type(uint256).max);
         dai.approve(address(dexB), type(uint256).max);
 
-        dexA.addLiquidity(100e18, 10_000e18);
+        dexA.addLiquidity(90e18, 10_000e18);
         dexB.addLiquidity(100e18, 10_000e18);
 
         vm.stopBroadcast();

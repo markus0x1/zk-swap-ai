@@ -30,15 +30,15 @@ library Constants {
     address constant SAFE_PROTOCOL_MANAGER = address(0xab2E9E1745dFa94054079bCFB7049B1365f92002);
 
     // mock contracts
-    address constant WETH_ADDRESS = address(0x80c44EDDC8273bfc979935566a931849a7f99623);
-    address constant DAI_ADDRESS = address(0xb7e045C84F6655752F492Fd0331BfB251aB777B9);
-    address constant DEX_A_ADDRESS = address(0xedAEFA74b35DB5aB40F8a79679731B68c6407455);
-    address constant DEX_B_ADDRESS = address(0x6C61c9668FAEa7c4bdaD4E72b1090f54aC8A8405);
+    address constant WETH_ADDRESS = address(0xB1a5A5053c6C5BC2dC2887C1dcACF5a967f3A7D7);
+    address constant DAI_ADDRESS = address(0xf041eCF7fef85b5AE2F5f4c8C674293Ee087E30A);
+    address constant DEX_A_ADDRESS = address(0x090d1f489d873dd2E4a496a43094C0C354B43AD7);
+    address constant DEX_B_ADDRESS = address(0x91B6E90292Eb74cbC970547CD49EE356221e0652);
 
     // safe contracts
-    address constant VERIFIER = address(0xD533fA21a99d250B7D0f81ac4E4B8F489dbDfC01);
-    address constant PLUGIN = address(0xecc5d5B29C82d4D91d25aA93177F474bA47e82b5);
-    address constant SAFE_ADDRESS = address(0x12E730b6f8FFd9dcAb7F2C7e8b715F1c8F51efF7);
+    address constant VERIFIER = address(0x1A78584594935D578e664059691fc43c97a56752);
+    address constant PLUGIN = address(0x0D546Ec216815C3fCbD2955324f95847B675B76e);
+    address constant SAFE_ADDRESS = address(0x09143e2b311168BB90abf97BcC8b7Ba7A1aBd308);
 
     function getContracts()
         internal
