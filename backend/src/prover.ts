@@ -26,15 +26,15 @@ export const generateProof = async (input: CircuitInput): Promise<[Proof, string
     const circuit = await circomkit.ProofTester(`aggregator_${N}`);
     const { proof, publicSignals } = await circuit.prove(input);
     console.log({ proof })
-    const sigma =  proof as { pi_a: [string, string, string], pi_b: [[string, string], [string, string]], pi_c: [string, string, string] }
+    const sigma = proof as { pi_a: [string, string, string], pi_b: [[string, string], [string, string]], pi_c: [string, string, string] }
     await circuit.expectPass(proof, publicSignals);
-    return [ 
+    return [
         {
-            _pA: [BigInt(sigma.pi_a[0]), BigInt(sigma.pi_a[1])], 
+            _pA: [BigInt(sigma.pi_a[0]), BigInt(sigma.pi_a[1])],
             _pB: [
-                [BigInt(sigma.pi_b[0][0]), BigInt(sigma.pi_b[0][1])], 
+                [BigInt(sigma.pi_b[0][0]), BigInt(sigma.pi_b[0][1])],
                 [BigInt(sigma.pi_b[1][0]), BigInt(sigma.pi_b[1][1])]
-            ], 
+            ],
             _pC: [BigInt(sigma.pi_c[0]), BigInt(sigma.pi_c[1])]
         },
         publicSignals,

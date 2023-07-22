@@ -1,11 +1,11 @@
 export interface UserData {
-  safe: string;
-  inToken: string;
-  outToken: string;
-  dx: bigint;
-  minDy: bigint;
-  nonce: bigint;
-  signature: ArrayBuffer;
+    safe: string;
+    inToken: string;
+    outToken: string;
+    dx: bigint;
+    minDy: bigint;
+    nonce: bigint;
+    signature: ArrayBuffer;
 }
 
 // struct Solution {
@@ -16,12 +16,12 @@ export interface UserData {
 //     uint256[2] _pC;
 // }
 export interface Solution extends Proof {
-  dxA: bigint;
-  dxB: bigint;
+    dxA: bigint;
+    dxB: bigint;
 }
 
 export interface Proof {
-  _pA: [bigint, bigint];
-  _pB: [[bigint, bigint], [bigint, bigint]];
-  _pC: [bigint, bigint];
+    _pA: [bigint, bigint];
+    _pB: [[bigint, bigint], [bigint, bigint]];
+    _pC: [bigint, bigint];
 }

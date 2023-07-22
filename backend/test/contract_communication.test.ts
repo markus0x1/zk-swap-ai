@@ -1,6 +1,6 @@
 import { DAI_ADDRESS, WETH_ADDRESS, getDy } from "../src/ethereum";
 
-describe.only('proof ethereum calls', () => {
+describe.only('ethereum calls', () => {
     it('getDy', async () => {
         const dYDai = await getDy("A", 1n, DAI_ADDRESS)
         expect(dYDai).toBeGreaterThan(0n)

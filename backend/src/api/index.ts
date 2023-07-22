@@ -59,10 +59,10 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
   const yB = BigInt(dexB.reserve1);
 
   const [proof] = await generateProof({
-    xA: xA,
-    yA: yA,
-    xB: xB,
-    yB: yB,
+    xA,
+    yA,
+    xB,
+    yB,
     dxA,
     dxB,
     dyA,
@@ -72,7 +72,8 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
   const solution: Solution = { dxA, dxB, ...proof };
   const userData = { safe: safeAddress, ...trade, nonce, signature };
   const recipt = await tradeWithIntent(userData, solution);
-  await recipt.wait();
+  const receiptResponse = await recipt.wait();
+  console.log({ receiptResponse })
 
   res.json({ recipt });
 });
