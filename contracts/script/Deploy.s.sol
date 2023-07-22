@@ -5,6 +5,7 @@ import "forge-std/Script.sol";
 import "./Constants.sol";
 
 import "../src/DeployManager.sol";
+import "../src/Module.sol";
 import "../src/groth16_verifier.sol";
 import {ExecutableMockContract} from "safe-core-protocol-demo/contracts/contracts/Imports.sol";
 
@@ -49,7 +50,7 @@ contract DeployMock is Script {
 
 contract DeploySafe is Script {
     //external dependencies
-    uint256 constant SALT = 4564456456864564856;
+    uint256 constant SALT = 456445645686456485346;
  
     // setup 
     uint256 privateKey = vm.envUint("PRIVATE_KEY");
@@ -57,7 +58,7 @@ contract DeploySafe is Script {
     address[] owners = [deployer];
 
     function run() external {
-        (,,,, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager safeProtocolManager ) = Constants.getContracts();
+        (Token weth, Token dai, CPAMM dexA, CPAMM dexB, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager safeProtocolManager,  ) = Constants.getContracts();
  
         vm.startBroadcast(privateKey);
 
@@ -70,7 +71,7 @@ contract DeploySafe is Script {
         SafeProxy proxy = factory.createProxyWithNonce(address(impl), initializer, SALT);
 
         // setup safe
-        DeployManager deploymanager = new DeployManager();
+        DeployManager deploymanager = new DeployManager(IERC20(address(weth)), IERC20(address(dai)), dexA, dexB);
         Safe safe = Safe(payable(proxy));
         safe.setup(
             owners, // signers
@@ -99,16 +100,19 @@ contract DeployModule is Script {
     address[] owners = [deployer];
 
     function run() external {
-        // (,,,, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager safeProtocolManager ) = Constants.getContracts();
+        (Token weth, Token dai, CPAMM dexA, CPAMM dexB, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager safeProtocolManager, Safe safe ) = Constants.getContracts();
  
         vm.startBroadcast(privateKey);
     
         // deploy verifier contract
         Groth16Verifier verifier = new Groth16Verifier();
+        Module module = new Module(dexA, dexB, address(weth), address(dai), verifier, safeProtocolManager);
+
 
         vm.stopBroadcast();
 
         console.log("address constant VERIFIER = address(%s);", address(verifier));
+        console.log("address constant MODULE = address(%s);", address(module));
 
     }
 }
