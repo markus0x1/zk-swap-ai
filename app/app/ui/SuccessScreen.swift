@@ -15,7 +15,7 @@ struct SuccessScreen: View {
                 .offset(x: 40, y: -60)
             VStack(alignment: .center) {
                 Text("You bought\n\(transactionManager.outputTokenAmount) \(transactionManager.outputTokenSymbol) from UniswapV3.")
-                    .font(.system(size: 56))
+                    .font(.system(size: 48))
                     .bold()
                     .padding(.top, 120)
                 Spacer()
@@ -23,6 +23,7 @@ struct SuccessScreen: View {
                     .buttonStyle(rounded(backgroundColor: SwapAiColor.black))
                     .padding()
             }
+            .padding()
         }
         .navigationBarHidden(true)
     }
