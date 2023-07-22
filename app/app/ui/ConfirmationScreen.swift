@@ -55,7 +55,7 @@ extension ConfirmationScreen {
     private func signWithMetamask() {
         let ethereum = transactionManager.connectionManager.ethereum
         print("signWithMetamask", ethereum.connected, transactionManager.connectionManager.connectedAddress)
-        var sendTxRequest = SwapApiSendTxRequest(
+        let sendTxRequest = SwapApiSendTxRequest(
             safeAddress: Config.Constants.safeAddress,
             inToken: Config.Constants.WETH,
             outToken: Config.Constants.DAI,
