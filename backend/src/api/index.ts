@@ -4,6 +4,7 @@ import { findOptimalPath as findOptimalTrade } from '../pathfinder';
 import { getDexState, getDy, tradeWithIntent } from '../ethereum';
 import { generateProof } from '../prover';
 import { Solution } from '../types/UserData';
+import { formatUnits } from 'ethers';
 
 const router = express.Router();
 
@@ -72,9 +73,7 @@ router.post<SwapRequest, {}>('/swap', async (req, res) => {
   console.log("Trade with intent", { userData, solution })
   const recipt = await tradeWithIntent(userData, solution);
   const receiptResponse = await recipt.wait();
-  console.log({ receiptResponse })
-
-  res.json({ recipt });
+  res.json({ txHash: receiptResponse.hash, amountIn: formatUnits(dx, dexA.decimals0),  amountOut: dyA > dyB ? formatUnits(dyA, dexA.decimals1) : formatUnits(dyB, dexB.decimals1) });
 });
 
 router.use('/blockchain', blockchain);
