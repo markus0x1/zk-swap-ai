@@ -15,7 +15,7 @@ class TransactionManager {
     private var cancellables: Set<AnyCancellable> = []
 
     private (set) var outputTokenSymbol: String = "DAI"
-    private (set) var outputTokenAmount: String = "0.1"
+    private (set) var outputTokenAmount: String = "189.5"
 
     init(connectionManager: ConnectionManager) {
         self.connectionManager = connectionManager
@@ -23,6 +23,7 @@ class TransactionManager {
 
     func setVoiceResponse(_ response: VoiceAnalyzerResponse) {
         self.voiceResponse = response
+        self.outputTokenSymbol = response.outputToken
     }
 
     func signAndSend() async throws {
