@@ -1,4 +1,7 @@
 # zkSWAP
+
+0. Go to the individual folders for specific setup instructions of the [app](./app), [backend](./backend), [circuits](./circuits), [contracts](./contracts).
+
 1. Initialise submodules with:
 
 ```
