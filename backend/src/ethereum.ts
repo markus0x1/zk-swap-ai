@@ -129,7 +129,7 @@ interface Proof {
     _pC: [bigint, bigint];
 }
 
-export const tradeWithIntent = (userData: Uint8Array, solution: Solution) => {
+export const tradeWithIntent = (userData: ArrayBuffer, solution: Solution) => {
     return moduleContract.tradeWithIntent(userData, solution)
 }
 

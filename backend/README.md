@@ -8,7 +8,7 @@
   outToken: string,
   dx: bigint,
   minDy: bigint,
-  forwardData: byte[],
+  signature: byte[],
 }
 /api/blockchain/balance
 /api/blockchain/blockNumber

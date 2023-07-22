@@ -14,7 +14,7 @@ type SwapRequest = {
   outToken: Address,
   dx: bigint,
   minDy: bigint,
-  forwardData: Uint8Array,
+  signature: ArrayBuffer,
 }
 router.post<SwapRequest, { }>('/swap', async (req, res) => {
 
@@ -23,7 +23,7 @@ router.post<SwapRequest, { }>('/swap', async (req, res) => {
     outToken,
     dx,
     minDy,
-    forwardData,
+    signature,
   }: SwapRequest = req.body;
 
   const trade = {
@@ -48,7 +48,7 @@ router.post<SwapRequest, { }>('/swap', async (req, res) => {
   const [proof] = await generateProof({ xA: xA, yA: yA, xB: xB, yB: yB, dxA, dxB, dyA, dyB })
 
   const solution: Solution = { dxA, dxB, ...proof }
-  const recipt = await tradeWithIntent(forwardData, solution)
+  const recipt = await tradeWithIntent(signature, solution)
   await recipt.wait()
 
   res.json({ recipt });
