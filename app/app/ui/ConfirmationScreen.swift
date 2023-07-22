@@ -19,7 +19,7 @@ struct ConfirmationScreen: View {
             BlurredGradientCircle()
                 .offset(x: 40, y: -60)
             VStack {
-                Text("Swap \(txDetails.inputAmount) \(txDetails.inputToken) for \(txDetails.outputToken)")
+                Text("Swap \n\(String(format: "%.3f", txDetails.inputAmount)) \(txDetails.inputToken) for \(txDetails.outputToken)")
                     .font(.system(size: 56))
                     .bold()
                     .padding(.top, 120)
@@ -34,7 +34,7 @@ struct ConfirmationScreen: View {
         }
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $isPresented) {
-            SuccessScreen()
+            SuccessScreen(transactionManager: transactionManager)
         }
     }
     private var txDetails: VoiceAnalyzerResponse {

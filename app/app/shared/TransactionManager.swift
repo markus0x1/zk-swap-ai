@@ -14,6 +14,9 @@ class TransactionManager {
     private (set) var voiceResponse: VoiceAnalyzerResponse?
     private var cancellables: Set<AnyCancellable> = []
 
+    private (set) var outputTokenSymbol: String = "DAI"
+    private (set) var outputTokenAmount: String = "0.1"
+
     init(connectionManager: ConnectionManager) {
         self.connectionManager = connectionManager
     }

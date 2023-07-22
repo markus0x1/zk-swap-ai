@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct SuccessScreen: View {
+    let transactionManager: TransactionManager
     var body: some View {
         ZStack() {
             BlurredGradientCircle()
                 .offset(x: 40, y: -60)
             VStack(alignment: .center) {
-                Text("You bought\n0.1 ETH from UniswapV3.")
+                Text("You bought\n\(transactionManager.outputTokenAmount) \(transactionManager.outputTokenSymbol) from UniswapV3.")
                     .font(.system(size: 56))
                     .bold()
                     .padding(.top, 120)
@@ -24,12 +25,6 @@ struct SuccessScreen: View {
             }
         }
         .navigationBarHidden(true)
-    }
-}
-
-struct SuccessScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        SuccessScreen()
     }
 }
 
