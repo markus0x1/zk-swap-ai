@@ -5,4 +5,5 @@ libs = ["lib"]
 
 [rpc_endpoints]
 tenderly = "${TENDERLY_FORK_URL}"
+gnosis = "https://rpc.ankr.com/gnosis"
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
