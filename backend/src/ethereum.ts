@@ -35,10 +35,10 @@ if (!process.env.DAI_ADDRESS) {
 export const DAI_ADDRESS = process.env.DAI_ADDRESS;
 
 
-if (!process.env.SAFE_MODULE_ADDRESS) {
-    throw new Error('SAFE_MODULE_ADDRESS is not set');
+if (!process.env.PLUGIN_ADDRESS) {
+    throw new Error('PLUGIN_ADDRESS is not set');
 }
-const SAFE_MODULE_ADDRESS = process.env.SAFE_MODULE_ADDRESS;
+const PLUGIN_ADDRESS = process.env.PLUGIN_ADDRESS;
 
 if (!process.env.GROTH16_VERIFIER_ADDRESS) {
     throw new Error('GROTH16_VERIFIER_ADDRESS is not set');
@@ -60,7 +60,7 @@ const signer = async () => {
 const dexBContract = new Contract(DEX_B_ADDRESS, CPAMMAbi.abi, wallet)
 const dexAContract = new Contract(DEX_A_ADDRESS, CPAMMAbi.abi, wallet)
 
-const moduleContract = new Contract(SAFE_MODULE_ADDRESS, PluginAbi.abi, wallet)
+const moduleContract = new Contract(PLUGIN_ADDRESS, PluginAbi.abi, wallet)
 // const moduleContract = _moduleContract.connect(wallet)
 
 const daiErc20Contract = new Contract(DAI_ADDRESS, IERC20Abi.abi, wallet)
