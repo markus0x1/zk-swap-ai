@@ -10,13 +10,23 @@ import SwiftUI
 import WalletConnectModal
 
 struct ConnectView: View {
+    @ObservedObject private var walletConnectManager = WalletConnectManager()
     @ObservedObject private var connectionManager = ConnectionManager()
     @State private var cancellables: Set<AnyCancellable> = []
     @State private var isPresented = false
     var body: some View {
         VStack {
             Button("Connect") {
-                isPresented = true
+                Task {
+                    walletConnectManager.setup()
+                    WalletConnectModal.present()
+                    try await walletConnectManager.listenToSession()
+                }
+            }
+            Button("Sign Data") {
+                Task {
+                    try await walletConnectManager.signData()
+                }
             }
             Button(action: {
                 connectionManager.ethereum.connect(connectionManager.dappMetamask)?.sink(receiveCompletion: { completion in
