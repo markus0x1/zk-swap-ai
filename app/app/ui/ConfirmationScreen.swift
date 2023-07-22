@@ -5,29 +5,34 @@
 //  Created by Jann Driessen on 21.07.23.
 //
 
+import Combine
+import Foundation
+import metamask_ios_sdk
 import SwiftUI
 
 struct ConfirmationScreen: View {
     let transactionManager: TransactionManager
+    @State private var cancellables: Set<AnyCancellable> = []
     @State private var isPresented = false
     var body: some View {
-        VStack {
-            Text("Swap \(txDetails.inputAmount) \(txDetails.inputToken) for \(txDetails.outputToken)")
-            Spacer()
-            Button("Sign&Send") {
-                Task.init {
-                    do {
-                        try await transactionManager.signAndSend()
-                        // TODO: only forward once tx is done?
-                        // TODO: pass tx information (to display on next screen)?
-                        isPresented = true
-                    } catch {
-                        print("Error sending tx", error)
-                    }
+        ZStack() {
+            BlurredGradientCircle()
+                .offset(x: 40, y: -60)
+            VStack {
+                Text("Swap \(txDetails.inputAmount) \(txDetails.inputToken) for \(txDetails.outputToken)")
+                    .font(.system(size: 56))
+                    .bold()
+                    .padding(.top, 120)
+                Spacer()
+                Button("Sign&Send") {
+                    isPresented = true
                 }
+                .buttonStyle(rounded(backgroundColor: SwapAiColor.black))
+                .padding()
             }
+            .padding()
         }
-        .padding()
+        .navigationBarHidden(true)
         .navigationDestination(isPresented: $isPresented) {
             SuccessScreen()
         }
@@ -39,6 +44,6 @@ struct ConfirmationScreen: View {
 
 struct ConfirmationScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmationScreen(transactionManager: TransactionManager())
+        ConfirmationScreen(transactionManager: TransactionManager(connectionManager: ConnectionManager()))
     }
 }

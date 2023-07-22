@@ -37,7 +37,7 @@ struct ConnectView: View {
         }
         .padding()
         .navigationDestination(isPresented: $isPresented) {
-            RecordScreen()
+            RecordScreen(connectionManager: connectionManager)
         }
         .onReceive(NotificationCenter.default.publisher(for: .MetamaskConnection)) { notification in
             print(notification.userInfo?["value"] as? String ?? "Offline")
