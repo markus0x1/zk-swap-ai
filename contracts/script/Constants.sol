@@ -32,12 +32,13 @@ library Constants {
     address constant SAFE_FACTORY = address(0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2);
     address constant REGISTRY_CONTRACT = address(0x3745FA7226c031D9Dd4B2c0ab9cB9fF2378b67Af);
     address constant SAFE_PROTOCOL_MANAGER = address(0xab2E9E1745dFa94054079bCFB7049B1365f92002);
-    address constant SAFE_ADDRESS = address(0xCe79d02774B7432E023122D9189D295d189B1cc8);
-
+    address constant SAFE_ADDRESS = address(0xF34f2AC034cC16d31f0EAe2c05E69359579032fa);
+    address constant MODULE = address(0x1911B66711161807bD6E0078364Bf04Ac60F7b95);
+    
     function getContracts()
         internal
         view
-        returns (Token weth, Token dai, CPAMM dexA, CPAMM dexB, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager manager )
+        returns (Token weth, Token dai, CPAMM dexA, CPAMM dexB, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager manager, Safe safe )
     {
         weth = Token(WETH_ADDRESS);
         dai = Token(DAI_ADDRESS);
@@ -47,6 +48,7 @@ library Constants {
         factory = SafeProxyFactory(SAFE_FACTORY);
         registry = IRegistry(REGISTRY_CONTRACT);
         manager = ISafeManager(address(0xab2E9E1745dFa94054079bCFB7049B1365f92002));
+        safe = Safe(payable(SAFE_ADDRESS));
 
 
         require(isContract(address(weth)), "WETH is not a contract");
