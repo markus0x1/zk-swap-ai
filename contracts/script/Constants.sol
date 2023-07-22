@@ -7,7 +7,7 @@ import "safe-contracts/contracts/Safe.sol";
 import "safe-contracts/contracts/proxies/SafeProxyFactory.sol";
 import "safe-contracts/contracts/Safe.sol";
 import "../src/DeployManager.sol";
-import "../src/Module.sol";
+import "../src/Plugin.sol";
 
 import "forge-std/Vm.sol";
 
@@ -23,17 +23,22 @@ interface IRegistry {
 }
 
 library Constants {
-    address constant WETH_ADDRESS = address(0x1684F4DF5e32a946fBbaEb3059353c83Ff075E31);
-    address constant DAI_ADDRESS = address(0xDAFA240382BE6e8Fb5b13D1516d3d220Cf5A1622);
-    address constant DEX_A_ADDRESS = address(0x2B416973a8F73B2f5acc99A0A6Af7001Cc02efBa);
-    address constant DEX_B_ADDRESS = address(0x985d28f8e5834D9b9048CFb39c9F76aaF2cB5bA0);
+    // factory contracts
     address constant SAFE_IMPL = address(0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552);
     address constant SAFE_FACTORY = address(0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2);
     address constant REGISTRY_CONTRACT = address(0x3745FA7226c031D9Dd4B2c0ab9cB9fF2378b67Af);
     address constant SAFE_PROTOCOL_MANAGER = address(0xab2E9E1745dFa94054079bCFB7049B1365f92002);
-    address constant VERIFIER = address(0x617c8c988fE90BE27a00E7ed2197e9A70d5b6847);
-    address constant MODULE = address(0x90FF66e76e0f7f80Fd0a321190865b8D4f82C9b0);
-    address constant SAFE_ADDRESS = address(0x659803C83d48D9377E3314444B12cF4be0cE7B23);
+
+    // mock contracts
+    address constant WETH_ADDRESS = address(0x80c44EDDC8273bfc979935566a931849a7f99623);
+    address constant DAI_ADDRESS = address(0xb7e045C84F6655752F492Fd0331BfB251aB777B9);
+    address constant DEX_A_ADDRESS = address(0xedAEFA74b35DB5aB40F8a79679731B68c6407455);
+    address constant DEX_B_ADDRESS = address(0x6C61c9668FAEa7c4bdaD4E72b1090f54aC8A8405);
+
+    // safe contracts
+    address constant VERIFIER = address(0xD533fA21a99d250B7D0f81ac4E4B8F489dbDfC01);
+    address constant PLUGIN = address(0xecc5d5B29C82d4D91d25aA93177F474bA47e82b5);
+    address constant SAFE_ADDRESS = address(0x12E730b6f8FFd9dcAb7F2C7e8b715F1c8F51efF7);
 
     function getContracts()
         internal
@@ -48,7 +53,7 @@ library Constants {
             IRegistry registry,
             ISafeManager manager,
             Safe safe,
-            Module module
+            Plugin plugin
         )
     {
         weth = Token(WETH_ADDRESS);
@@ -60,7 +65,7 @@ library Constants {
         registry = IRegistry(REGISTRY_CONTRACT);
         manager = ISafeManager(SAFE_PROTOCOL_MANAGER);
         safe = Safe(payable(SAFE_ADDRESS));
-        module = Module(payable(MODULE));
+        plugin = Plugin(payable(PLUGIN));
 
         require(isContract(address(weth)), "WETH is not a contract");
         require(isContract(address(dai)), "DAI is not a contract");

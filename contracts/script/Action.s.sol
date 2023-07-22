@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
 import "./Constants.sol";
-import "../src/Module.sol";
+import "../src/Plugin.sol";
 
 // https://book.getfoundry.sh/tutorials/solidity-scripting
 // anvil
@@ -63,30 +63,43 @@ contract TradeIntent is Script {
     function run() external {
         vm.startBroadcast(privateKey);
 
-        (Token weth, Token dai,,,,,,, Safe safe, Module module) = Constants.getContracts();
+        (Token weth, Token dai,,,,,,, Safe safe, Plugin plugin) = Constants.getContracts();
 
-        // UserData calldata intent, Solution calldata solution
-        //         struct UserData {
-        //     ISafe safe;
-        //     address inToken;
-        //     address outToken;
-        //     uint256 dx;
-        //     uint256 minDy;
-        //     uint256 nonce;
-        //     bytes signature;
-        // }
-
-        Module.UserData memory intent = Module.UserData({
+        // vm.sign(spenderPrivateKey, digest);
+        Plugin.UserData memory intent = Plugin.UserData({
             safe: ISafe(address(safe)),
             inToken: address(weth),
             outToken: address(dai),
             dx: 1e18,
             minDy: 1e18,
             nonce: 0,
-            signature: bytes("")
+            signature: bytes("") // todo: verify signatures
         });
 
-        module.executeIntent(intent, 10, 0);
+        Plugin.Solution memory solution = Plugin.Solution({
+            dxA: 1e18,
+            dxB: 0,
+            _pA: [
+                3993751688615872534373337630453297756478321619160500648136349198203275519167,
+                8584110642634779619545547968659167718332505614253301785067671669771642131340
+            ],
+            _pB: [
+                [
+                    7230224512238358857357839997801890056083077953974333728884275160377353162701,
+                    13216692223818468102201200019143294358321540894747571114913840477285067306918
+                ],
+                [
+                    4499649094932395313491033912183848902416480744767733726531283257959567362062,
+                    12301186710163432270342675719237504003754813836951115842892197755431494034613
+                ]
+            ],
+            _pC: [
+                5017159971739915853389176512635513006051127634560316982090271143776976333111,
+                2331706596664733946788574123193317153091591945326340438613374689851394836004
+            ]
+        });
+
+        plugin.tradeWithIntent(intent, solution);
 
         vm.stopBroadcast();
     }
