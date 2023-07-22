@@ -1,41 +1,58 @@
 import express from 'express';
 import blockchain from './blockchain';
-import { findOptimalPath } from '../pathfinder';
-import { getDexState } from '../ethereum';
+import { findOptimalPath as findOptimalTrade } from '../pathfinder';
+import { getDexState, getDy, tradeWithIntent } from '../ethereum';
 import { generateProof } from '../prover';
+import { Solution } from '../types/UserData';
 
 const router = express.Router();
 
-router.post<{
-  inToken: string,
-  outToken: string,
-  amount: number,
-  minOut: number,
-  nonce: number,
-  signature: string
-}, { }>('/swap', async (req, res) => {
+type Address = string;
+
+type SwapRequest = {
+  forwardData: Uint8Array,
+  inToken: Address,
+  outToken: Address,
+  dx: bigint,
+  minDy: bigint,
+}
+
+router.post<SwapRequest, { }>('/swap', async (req, res) => {
+
   const {
+    forwardData,
     inToken,
     outToken,
-    amount,
-    minOut,
-    nonce,
-    signature,
-  } = req.body;
+    dx,
+    minDy,
+  }: SwapRequest = req.body;
 
-  const trade: Trade =  {
+  const trade =  {
     inToken,
     outToken,
-    amount,
-    minOut,
+    dx,
+    minDy,
   }
-  const stateA = await getDexState("A")
-  const stateB = await getDexState("B")
+  const dexA = await getDexState("A")
+  const dexB = await getDexState("B")
 
-  const path = findOptimalPath(stateA, stateB, trade)
-  const sigma = generateProof({ xA: 10000, yA: 10, xB: 15000, yB: 10, dxA: 1000, dyA: 1, dxB: 0, dyB: 0 })
+  const estimatedDyA = await getDy("A", dx)
+  const estimatedDyB = await getDy("B", dx)
 
-  res.json({ path, proof: sigma });
+  const { dxA, dxB, dyA, dyB } = findOptimalTrade(dexA, dexB, estimatedDyA, estimatedDyB, trade)
+
+  const xA = BigInt(dexA.reserve0)
+  const yA = BigInt(dexA.reserve1)
+  const xB = BigInt(dexB.reserve0)
+  const yB = BigInt(dexB.reserve1)
+
+  const [proof] = await generateProof({ xA: xA, yA: yA, xB: xB, yB: yB, dxA, dxB, dyA, dyB })
+
+  const solution: Solution = { dxA, dxB, ...proof }
+  const recipt = await tradeWithIntent(forwardData, solution)
+  await recipt.wait()
+
+  res.json({ recipt });
 });
 
 router.use('/blockchain', blockchain)

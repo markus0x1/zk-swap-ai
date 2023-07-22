@@ -1,4 +1,4 @@
-interface AMMState {
+export interface AMMState {
   decimals0: string,
   decimals1: string,
   price: string,

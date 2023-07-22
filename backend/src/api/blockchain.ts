@@ -48,5 +48,18 @@ router.get<{ dex: string }, {
   });
 });
 
+router.get<{ dex: string }, { price: string }>('/getNonce/:address', (req, res) => {
+  const { dex } = req.params;
+  if (dex !== 'A' && dex !== 'B') {
+    res.json({ price: "undefined" });
+    return;
+  }
+
+  getPrice(dex).then((price) => {
+    res.json({ price });
+  });
+});
+
+
 export default router;
 
