@@ -18,10 +18,11 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 if (!process.env.DEX_A_ADDRESS) {
     throw new Error('DEX_A_ADDRESS is not set');
 }
+const DEX_A_ADDRESS = process.env.DEX_A_ADDRESS;
+
 if (!process.env.DEX_B_ADDRESS) {
     throw new Error('DEX_B_ADDRESS is not set');
 }
-const DEX_A_ADDRESS = process.env.DEX_A_ADDRESS;
 const DEX_B_ADDRESS = process.env.DEX_B_ADDRESS;
 
 if (!process.env.WETH_ADDRESS) {
@@ -60,7 +61,7 @@ const signer = async () => {
 const dexBContract = new Contract(DEX_B_ADDRESS, CPAMMAbi.abi, wallet)
 const dexAContract = new Contract(DEX_A_ADDRESS, CPAMMAbi.abi, wallet)
 
-const moduleContract = new Contract(PLUGIN_ADDRESS, PluginAbi.abi, wallet)
+const pluginContract = new Contract(PLUGIN_ADDRESS, PluginAbi.abi, wallet)
 // const moduleContract = _moduleContract.connect(wallet)
 
 const daiErc20Contract = new Contract(DAI_ADDRESS, IERC20Abi.abi, wallet)
@@ -138,7 +139,7 @@ interface Proof {
 }
 
 export const tradeWithIntent = (userData: UserData, solution: Solution) => {
-    return moduleContract.tradeWithIntent(userData, solution)
+    return pluginContract.tradeWithIntent(userData, solution)
 }
 
 export const getDex = async (exchange: "A" | "B") => {
