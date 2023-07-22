@@ -1,11 +1,11 @@
 export interface UserData {
-        safeAddress: string;
-        inToken: string;
-        outToken: string;
-        dx: bigint;
-        minDy: bigint;
-        nounce: bigint;
-        signature: ArrayBuffer;
+    safe: string;
+    inToken: string;
+    outToken: string;
+    dx: bigint;
+    minDy: bigint;
+    nonce: bigint;
+    signature: ArrayBuffer;
 }
 
 // struct Solution {
