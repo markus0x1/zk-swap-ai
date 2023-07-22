@@ -174,7 +174,6 @@ contract Module is BasePluginWithEventMetadata {
         require(verifier.verifyProof(solution._pA, solution._pB, solution._pC, pubSignals), "proof failed");
     }
 
-
     error ReturnReceived(Received received);
 
     function simulateExecution(UserData calldata intent, Solution calldata solution)
