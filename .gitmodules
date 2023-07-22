@@ -16,4 +16,6 @@
 [submodule "contracts/lib/safe-core-protocol"]
 	path = contracts/lib/safe-core-protocol
 	url = https://github.com/5afe/safe-core-protocol
-
+[submodule "circuits/lib/circomlib"]
+	path = circuits/lib/circomlib
+	url = https://github.com/iden3/circomlib.git

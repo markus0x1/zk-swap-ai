@@ -5,6 +5,7 @@ import "forge-std/Script.sol";
 import "./Constants.sol";
 
 import "../src/DeployManager.sol";
+import "../src/groth16_verifier.sol";
 import {ExecutableMockContract} from "safe-core-protocol-demo/contracts/contracts/Imports.sol";
 
 // reference:
@@ -85,6 +86,29 @@ contract DeploySafe is Script {
         vm.stopBroadcast();
 
         console.log("address constant SAFE_ADDRESS = address(%s);", address(safe));
+
+    }
+}
+
+
+
+contract DeployModule is Script { 
+    // setup 
+    uint256 privateKey = vm.envUint("PRIVATE_KEY");
+    address deployer = vm.addr(privateKey);
+    address[] owners = [deployer];
+
+    function run() external {
+        // (,,,, Safe impl, SafeProxyFactory factory, IRegistry registry ,ISafeManager safeProtocolManager ) = Constants.getContracts();
+ 
+        vm.startBroadcast(privateKey);
+    
+        // deploy verifier contract
+        Groth16Verifier verifier = new Groth16Verifier();
+
+        vm.stopBroadcast();
+
+        console.log("address constant VERIFIER = address(%s);", address(verifier));
 
     }
 }

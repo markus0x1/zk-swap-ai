@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "test": "npx mocha",
+    "compile": "npx circomkit compile aggregator_128",
+    "setup": "npx circomkit setup aggregator_128",
+    "prove": "npx circomkit prove aggregator_128 default",
+    "verify": "npx circomkit verify aggregator_128 default",
+    "contract": "npx circomkit contract aggregator_128",
+    "copy-contract": "cp build/aggregator_128/groth16_verifier.sol ../contracts/src/groth16_verifier.sol"
+  },
+  "dependencies": {
+    "@types/jest": "^29.5.3",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.3.0",
+    "circomkit": "^0.0.16",
+    "circomlib": "^2.0.5",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  }
+}
