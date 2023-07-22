@@ -21,8 +21,15 @@ contract Module is BasePluginWithEventMetadata {
     address immutable owner;
     ISafeManager immutable safeProtocolManager;
 
-    constructor(CPAMM _dexA, CPAMM _dexB, address _weth, address _dai, Groth16Verifier _verifier, ISafeManager _safeProtocolManager) 
-            BasePluginWithEventMetadata(
+    constructor(
+        CPAMM _dexA,
+        CPAMM _dexB,
+        address _weth,
+        address _dai,
+        Groth16Verifier _verifier,
+        ISafeManager _safeProtocolManager
+    )
+        BasePluginWithEventMetadata(
             PluginMetadata({
                 name: "Relay Plugin",
                 version: "1.0.0",
@@ -31,7 +38,7 @@ contract Module is BasePluginWithEventMetadata {
                 appUrl: "https://5afe.github.io/safe-core-protocol-demo/#/relay/${plugin}"
             })
         )
- {
+    {
         dexA = _dexA;
         dexB = _dexB;
         weth = _weth;
@@ -39,7 +46,6 @@ contract Module is BasePluginWithEventMetadata {
         verifier = _verifier;
         owner = msg.sender; // @todo replace by gnosis multisig signer
         safeProtocolManager = _safeProtocolManager;
-
     }
 
     struct State {
@@ -67,7 +73,6 @@ contract Module is BasePluginWithEventMetadata {
         uint256[2] _pC;
     }
 
-
     struct Received {
         uint256 dyA;
         uint256 dyB;
@@ -75,34 +80,36 @@ contract Module is BasePluginWithEventMetadata {
 
     // function approve(address _weth, address _dai, Safe safe) public { // @audit-issue verify caller
     //     SafeProtocolAction[] memory safeActions = new SafeProtocolAction[](1);
-    //     safeActions[0] = SafeProtocolAction(payable(address(_weth)), 0, abi.encodeCall(ERC20.approve, (address(dexA), type(uint256).max)));     
-    //     // safeActions[1] = SafeProtocolAction(payable(address(_weth)), 0, abi.encodeCall(ERC20.approve, (address(dexB), type(uint256).max)));     
+    //     safeActions[0] = SafeProtocolAction(payable(address(_weth)), 0, abi.encodeCall(ERC20.approve, (address(dexA), type(uint256).max)));
+    //     // safeActions[1] = SafeProtocolAction(payable(address(_weth)), 0, abi.encodeCall(ERC20.approve, (address(dexB), type(uint256).max)));
 
-    //     // safeActions[2] = SafeProtocolAction(payable(address(_dai)), 0, abi.encodeCall(ERC20.approve, (address(dexA), type(uint256).max)));     
-    //     // safeActions[3] = SafeProtocolAction(payable(address(_dai)), 0, abi.encodeCall(ERC20.approve, (address(dexB), type(uint256).max)));     
+    //     // safeActions[2] = SafeProtocolAction(payable(address(_dai)), 0, abi.encodeCall(ERC20.approve, (address(dexA), type(uint256).max)));
+    //     // safeActions[3] = SafeProtocolAction(payable(address(_dai)), 0, abi.encodeCall(ERC20.approve, (address(dexB), type(uint256).max)));
 
-    //     SafeTransaction memory safeTransaction = SafeTransaction(safeActions, 0, bytes32(0));        
-        
+    //     SafeTransaction memory safeTransaction = SafeTransaction(safeActions, 0, bytes32(0));
+
     //     safeProtocolManager.executeTransaction(ISafe(address(safe)),safeTransaction);
     // }
 
-    function _executeIntent(UserData calldata intent, Solution calldata solution)
-        internal
+    function executeIntent(UserData calldata intent, uint256 dxA, uint256 dxB)
+        public
         returns (Received memory received)
     {
-
         SafeProtocolAction[] memory safeActions;
-        if (solution.dxA > 0 && solution.dxB > 0) {
+        if (dxA > 0 && dxB > 0) {
             safeActions = new SafeProtocolAction[](2);
-            safeActions[0] = SafeProtocolAction(payable(address(dexA)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, solution.dxA)));     
-            safeActions[1] = SafeProtocolAction(payable(address(dexB)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, solution.dxB)));     
-
+            safeActions[0] =
+                SafeProtocolAction(payable(address(dexA)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, dxA)));
+            safeActions[1] =
+                SafeProtocolAction(payable(address(dexB)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, dxB)));
         } else {
             safeActions = new SafeProtocolAction[](1);
-            if (solution.dxA > 0 && solution.dxB == 0 ) {
-                safeActions[0] = SafeProtocolAction(payable(address(dexA)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, solution.dxA)));     
-            } else if  (solution.dxA == 0 && solution.dxB > 0 ) {
-                safeActions[0] = SafeProtocolAction(payable(address(dexB)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, solution.dxB)));     
+            if (dxA > 0 && dxB == 0) {
+                safeActions[0] =
+                    SafeProtocolAction(payable(address(dexA)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, dxA)));
+            } else if (dxA == 0 && dxB > 0) {
+                safeActions[0] =
+                    SafeProtocolAction(payable(address(dexB)), 0, abi.encodeCall(CPAMM.swap, (intent.inToken, dxB)));
             }
         }
 
@@ -110,11 +117,10 @@ contract Module is BasePluginWithEventMetadata {
         // require(dyA + dyB >= intent.minDy, "min dy"); dont care
         received = Received(0, 0);
 
-        SafeTransaction memory safeTransaction = SafeTransaction(safeActions, intent.nonce, bytes32(0));        
-        safeProtocolManager.executeTransaction(intent.safe,safeTransaction);
-
+        SafeTransaction memory safeTransaction = SafeTransaction(safeActions, intent.nonce, bytes32(0));
+        //console.log("safeTransaction", safeTransaction);
+        safeProtocolManager.executeTransaction(intent.safe, safeTransaction);
     }
-
 
     function tradeWithIntent(UserData calldata intent, Solution calldata solution) public {
         // validate intent
@@ -124,13 +130,15 @@ contract Module is BasePluginWithEventMetadata {
         // State memory preState = getState(daiForEth);
 
         // execute intent
-        Received memory received = _executeIntent(intent, solution);
+        Received memory received = executeIntent(intent, solution.dxA, solution.dxB);
 
         // validate solution
         // validateSolution(intent, solution, preState, received);
     }
 
-    /*******************************  VIEWERS ********************************/
+    /**
+     *  VIEWERS *******************************
+     */
     function getState(bool daiForEth) public view returns (State memory state) {
         // @audit-issue can frontrun the tx to invalidate a trade
         // solution: use the state from the previous block via an block state oracle
@@ -180,7 +188,7 @@ contract Module is BasePluginWithEventMetadata {
         public
         returns (Received memory _received)
     {
-        Received memory received = _executeIntent(intent, solution);
+        Received memory received = executeIntent(intent, solution.dxA, solution.dxB);
         revert ReturnReceived(received);
     }
 }
