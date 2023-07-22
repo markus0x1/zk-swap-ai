@@ -22,21 +22,22 @@ struct RecordScreen: View {
     @ObservedObject private var connectionManager: ConnectionManager
     private let transactionManager: TransactionManager
     @State private var isPresented = false
-    
+
     @StateObject var speechRecognizer = SpeechRecognizer()
     @State private var isTalking = false
-    
+
     @State var transcript = "test"
-    
+
     private var player: AVPlayer { AVPlayer.sharedDingPlayer }
 
     init(connectionManager: ConnectionManager) {
         self.connectionManager = connectionManager
         self.transactionManager = TransactionManager(connectionManager: connectionManager)
     }
+
     var body: some View {
         VStack {
-            Text(transcript)
+//            Text(transcript)
             GlowingButton(isTalking: $isTalking)
                 .onTapGesture {
                     Task.init {
@@ -49,8 +50,6 @@ struct RecordScreen: View {
                         transcript = speechRecognizer.transcript
                         let openAI = OpenAIService()
                         let analyzer = VoiceAnalyzer(openAIService: openAI)
-                        // FIXME: note some of the classes only return dummy data for now (change for production)
-                        // TODO: use result of voice recording (text)
                         let res = await analyzer.analyzeText(transcript)
                         print("////OPENAIRES")
                         print(res)

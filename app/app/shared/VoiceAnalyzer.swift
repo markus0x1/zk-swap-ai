@@ -8,10 +8,8 @@
 import Foundation
 
 struct VoiceAnalyzerResponse: Decodable {
-    // TODO: parse symbols to addresses?
     let inputToken: String
     let outputToken: String
-    // TODO: parse to BigInt?
     let inputAmount: Double
 }
 
@@ -24,7 +22,6 @@ class VoiceAnalyzer {
 
     func analyzeText(_ text: String) async -> VoiceAnalyzerResponse?  {
         print("Analyzing text", text)
-        // TODO: just for testing
 //        return VoiceAnalyzerResponse(inputToken: "ETH", outputToken: "USDC", inputAmount: 0.01)
         guard let resOpenAI = try? await openAIService.requestCompletion(with: text) else { return nil }
         guard let parsedRes = try? parseOpenAIResponse(resOpenAI) else { return nil }
