@@ -38,4 +38,19 @@ describe.only('proof tester', () => {
         expect(result).toBe(true)
     });
 
+    it('should verify a proof correctly for actual inputs', async () => {
+        const inputs = {
+            xA: 9101000000n,
+            yA: 988935277n,
+            xB: 1000000000n,
+            yB: 100000000n,
+            dxA: 0n,
+            dxB: 1n,
+            dyA: 0n,
+            dyB: 1n
+        }
+        const [sigma, publicSignals] = await generateProof(inputs)
+        const result = await verifyProof(sigma, publicSignals)
+        expect(result).toBe(true)
+    });
 })
