@@ -12,7 +12,7 @@ import "./DeployManager.sol";
 import "safe-core-protocol/contracts/interfaces/Accounts.sol";
 import "safe-core-protocol/contracts/DataTypes.sol";
 
-contract Module is BasePluginWithEventMetadata {
+contract Plugin is BasePluginWithEventMetadata {
     Groth16Verifier immutable verifier;
     CPAMM immutable dexA;
     CPAMM immutable dexB;
@@ -78,8 +78,8 @@ contract Module is BasePluginWithEventMetadata {
         uint256 dyB;
     }
 
-    function executeIntent(UserData calldata intent, uint256 dxA, uint256 dxB)
-        public
+    function _executeIntent(UserData calldata intent, uint256 dxA, uint256 dxB)
+        internal
         returns (Received memory received)
     {
         SafeProtocolAction[] memory safeActions;
@@ -111,16 +111,16 @@ contract Module is BasePluginWithEventMetadata {
 
     function tradeWithIntent(UserData calldata intent, Solution calldata solution) public {
         // validate intent
-        // bool daiForEth = validateIntent(intent);
+        bool daiForEth = validateIntent(intent);
 
         // pre state
-        // State memory preState = getState(daiForEth);
+        State memory preState = getState(daiForEth);
 
         // execute intent
-        Received memory received = executeIntent(intent, solution.dxA, solution.dxB);
+        Received memory received = _executeIntent(intent, solution.dxA, solution.dxB);
 
         // validate solution
-        // validateSolution(intent, solution, preState, received);
+        validateSolution(intent, solution, preState, received);
     }
 
     /**
@@ -138,11 +138,12 @@ contract Module is BasePluginWithEventMetadata {
 
     function validateIntent(UserData calldata intent) public view returns (bool daiForEth) {
         // validate signature on relevant arguments. not safe against replay
-        bytes32 structHash = keccak256(abi.encode(intent.inToken, intent.outToken, intent.dx, intent.minDy));
-        address signer = ECDSA.recover(structHash, intent.signature);
-        if (signer != owner) {
-            revert("invalid signature");
-        }
+
+        // bytes32 structHash = keccak256(abi.encode(intent.inToken, intent.outToken, intent.dx, intent.minDy));
+        // address signer = ECDSA.recover(structHash, intent.signature);
+        // if (signer != owner) {
+        //     revert("invalid signature");
+        // }
 
         // validate token arguments
         require(
@@ -175,7 +176,7 @@ contract Module is BasePluginWithEventMetadata {
         public
         returns (Received memory _received)
     {
-        Received memory received = executeIntent(intent, solution.dxA, solution.dxB);
+        Received memory received = _executeIntent(intent, solution.dxA, solution.dxB);
         revert ReturnReceived(received);
     }
 }

@@ -202,6 +202,18 @@ contract CPAMM {
         token1.transfer(msg.sender, amount1);
     }
 
+    function get_dy(uint256 dx, IERC20 inToken) external view returns (uint256 dy) {
+        if (inToken == token0) {
+            uint256 k = reserve0 * reserve1;
+            uint256 y = reserve1;
+            dy = y - k / (reserve0 + dx * (1000 - 997));
+        } else {
+            uint256 k = reserve0 * reserve1;
+            uint256 y = reserve0;
+            dy = y - k / (reserve1 + dx * (1000 - 997));
+        }
+    }
+
     function price() external view returns (uint256 priceToken1) {
         uint256 amount0Wad = reserve0 * 10 ** (18 - decimals0); // 1000 USDC
         uint256 amount1Wad = reserve1 * 10 ** (18 - decimals1); // 1 ETH
