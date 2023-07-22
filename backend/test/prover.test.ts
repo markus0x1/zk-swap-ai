@@ -34,7 +34,6 @@ describe.only('proof tester', () => {
 
     it('should verify a proof correctly', async () => {
         const [sigma, publicSignals]  = await generateProof(defaultValues)
-        console.log({ sigma, publicSignals })
         const result = await verifyProof(sigma, publicSignals )
         expect(result).toBe(true)
     });

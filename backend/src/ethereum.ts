@@ -24,14 +24,21 @@ if (!process.env.DEX_B_ADDRESS) {
 const DEX_A_ADDRESS = process.env.DEX_A_ADDRESS;
 const DEX_B_ADDRESS = process.env.DEX_B_ADDRESS;
 
-const WETH_ADDRESS = process.env.DEX_A_ADDRESS;
-const DAI_ADDRESS = process.env.DEX_A_ADDRESS;
-
-
-if (!process.env.SAFE_MODULE_ADDRESS) {
-    throw new Error('SAFE_MODULE_ADDRESS is not set');
+if (!process.env.WETH_ADDRESS) {
+    throw new Error('WETH_ADDRESS is not set');
 }
-const SAFE_MODULE_ADDRESS = process.env.SAFE_MODULE_ADDRESS;
+export const WETH_ADDRESS = process.env.WETH_ADDRESS;
+
+if (!process.env.DAI_ADDRESS) {
+    throw new Error('DAI_ADDRESS is not set');
+}
+export const DAI_ADDRESS = process.env.DAI_ADDRESS;
+
+
+if (!process.env.PLUGIN_ADDRESS) {
+    throw new Error('PLUGIN_ADDRESS is not set');
+}
+const PLUGIN_ADDRESS = process.env.PLUGIN_ADDRESS;
 
 if (!process.env.GROTH16_VERIFIER_ADDRESS) {
     throw new Error('GROTH16_VERIFIER_ADDRESS is not set');
@@ -53,7 +60,7 @@ const signer = async () => {
 const dexBContract = new Contract(DEX_B_ADDRESS, CPAMMAbi.abi, wallet)
 const dexAContract = new Contract(DEX_A_ADDRESS, CPAMMAbi.abi, wallet)
 
-const moduleContract = new Contract(SAFE_MODULE_ADDRESS, PluginAbi.abi, wallet)
+const moduleContract = new Contract(PLUGIN_ADDRESS, PluginAbi.abi, wallet)
 // const moduleContract = _moduleContract.connect(wallet)
 
 const daiErc20Contract = new Contract(DAI_ADDRESS, IERC20Abi.abi, wallet)
@@ -138,8 +145,8 @@ export const getDex = async (exchange: "A" | "B") => {
     return exchange === 'A' ? dexAContract : dexBContract;
 }
 
-export const getDy = async (exchange: "A" | "B", dx: bigint) => {
-    return exchange === 'A' ? dexAContract.get_dy(dx) : dexBContract.get_dy(dx);
+export const getDy = async (exchange: "A" | "B", dx: bigint, inToken: string) => {
+    return exchange === 'A' ? dexAContract.get_dy(dx, inToken) : dexBContract.get_dy(dx, inToken);
 }
 
 export const verifyProof = (proof: Proof, publicSignals: string[]) => {
