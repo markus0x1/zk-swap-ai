@@ -1,5 +1,5 @@
 import express from 'express';
-import { balance, getBlockNumber, getPrice, getDexStats } from '../blockchain';
+import { balance, getBlockNumber, getPrice, getDexState as getDexState } from '../ethereum';
 
 const router = express.Router();
 
@@ -43,7 +43,7 @@ router.get<{ dex: string }, {
     return res.json(undefined);
   }
 
-  getDexStats(dex).then((stats) => {
+  getDexState(dex).then((stats) => {
     res.json(stats);
   });
 });
