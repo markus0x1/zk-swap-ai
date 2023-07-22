@@ -13,8 +13,8 @@ enum Config {
 
 extension Config {
     enum Constants {
-        static let safeAddress = "0x1911B66711161807bD6E0078364Bf04Ac60F7b95"
-        static let WETH = "0x1684F4DF5e32a946fBbaEb3059353c83Ff075E31"
-        static let DAI = "0xDAFA240382BE6e8Fb5b13D1516d3d220Cf5A1622"
+        static let safeAddress = "0x1367D7E411Df11c261e0Dd5a632c2f5d0245A095"
+        static let WETH = "0xB1a5A5053c6C5BC2dC2887C1dcACF5a967f3A7D7"
+        static let DAI = "0xf041eCF7fef85b5AE2F5f4c8C674293Ee087E30A"
     }
 }
