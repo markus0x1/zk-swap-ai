@@ -3,7 +3,13 @@
 ## API
 
 ```text
-/api/swap
+/api/swap {
+  inToken: string,
+  outToken: string,
+  dx: bigint,
+  minDy: bigint,
+  forwardData: byte[],
+}
 /api/blockchain/balance
 /api/blockchain/blockNumber
 /api/blockchain/getPrice/:dex // A or B

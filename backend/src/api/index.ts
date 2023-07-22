@@ -10,29 +10,28 @@ const router = express.Router();
 type Address = string;
 
 type SwapRequest = {
-  forwardData: Uint8Array,
   inToken: Address,
   outToken: Address,
   dx: bigint,
   minDy: bigint,
+  forwardData: Uint8Array,
 }
-
 router.post<SwapRequest, { }>('/swap', async (req, res) => {
 
   const {
-    forwardData,
     inToken,
     outToken,
     dx,
     minDy,
+    forwardData,
   }: SwapRequest = req.body;
 
-  const trade =  {
+  const trade = {
     inToken,
     outToken,
     dx,
     minDy,
-  }
+  } 
   const dexA = await getDexState("A")
   const dexB = await getDexState("B")
 
