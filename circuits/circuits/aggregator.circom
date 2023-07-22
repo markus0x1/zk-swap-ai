@@ -38,8 +38,8 @@ template Aggregator(n) {
   // enforce that the exchange are sorted correctly -> xA: 10_000, yA: 10, xB: 15_000, yB: 10
   signal xAyB <== xA * yB; 
   signal xByA <== xB * yA;
-  // signal sorted <== LessEqThan(n)([xAyB, xByA]);
-  // sorted === 1;
+  signal sorted <== 1; // LessEqThan(n)([xAyB, xByA]);
+  sorted === 1;
 
   // new balances
   signal xAnew <== xA + dxA;
