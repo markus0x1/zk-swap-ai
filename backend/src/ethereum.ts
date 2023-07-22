@@ -59,7 +59,7 @@ export const getPrice = async (exchange: "A" | "B") => {
     return formatUnits(res, decimals0)
 }
 
-export const getDexStats = async (exchange: "A" | "B"): Promise<{
+export const getDexState = async (exchange: "A" | "B"): Promise<{
     decimals0: string,
     decimals1: string,
     price: string,

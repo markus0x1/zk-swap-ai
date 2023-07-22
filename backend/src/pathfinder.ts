@@ -1,3 +1,3 @@
-export const findOptimalPath = (start: string, end: string): string => { 
-    return start + end;
+export const findOptimalPath = (dexA: AMMState, dexB: AMMState, trade: Trade): string => { 
+    return `${dexA} ${dexB} ${trade}`
 }

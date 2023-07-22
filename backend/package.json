@@ -19,6 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "circomkit": "^0.0.16",
     "cors": "^2.8.5",
     "dotenv": "^16.1.4",
     "ethers": "^6.6.4",
