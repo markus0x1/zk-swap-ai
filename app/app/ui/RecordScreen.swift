@@ -45,7 +45,7 @@ struct RecordScreen: View {
                         speechRecognizer.startTranscribing()
                         isTalking = true
                         // wait for 1 sec to simulate listening
-                        try await Task.sleep(nanoseconds: 10_000_000_000)
+                        try await Task.sleep(nanoseconds: 7_000_000_000)
                         speechRecognizer.stopTranscribing()
                         transcript = speechRecognizer.transcript
                         let openAI = OpenAIService()
@@ -54,7 +54,7 @@ struct RecordScreen: View {
                         print("////OPENAIRES")
                         print(res)
                         transactionManager.setVoiceResponse(res!)
-//                        isPresented = true
+                        isPresented = true
                     }
                 }
             Text("Say something like\n'I wanna swap 0.1 ETH for USDC'")
