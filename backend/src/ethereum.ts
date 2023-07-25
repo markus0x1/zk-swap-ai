@@ -3,7 +3,7 @@ import CPAMMAbi from '../../abis/CPAMM.json';
 import PluginAbi from '../../abis/Plugin.json';
 import Groth16Verifier from '../../abis/Groth16Verifier.json';
 import { ethers, Signer, Contract, formatUnits, formatEther } from 'ethers';
-import { UserData } from './types/UserData';
+import { Address, UserData } from './types/UserData';
 
 if (!process.env.TENDERLY_FORK_URL) {
     throw new Error('TENDERLY_FORK_URL is not set');
@@ -107,8 +107,6 @@ export const getDexState = async (exchange: "A" | "B"): Promise<{
     const token1 = await dex.token1()
     const totalSupply = await dex.totalSupply()
 
-    console.log({ decimals0, decimals1, price, reserve0, reserve1, token0, token1, totalSupply })
-
     return {
         decimals0: decimals0,
         decimals1: decimals1,
@@ -120,13 +118,16 @@ export const getDexState = async (exchange: "A" | "B"): Promise<{
         totalSupply: totalSupply,
     }
 }
-// struct Solution {
-//     uint256 dxA;
-//     uint256 dxB;
-//     uint256[2] _pA;
-//     uint256[2][2] _pB;
-//     uint256[2] _pC;
-// }
+
+
+export const getDexesState = async (dx: bigint, inToken: string) =>
+    Promise.all([
+        getDexState('A'),
+        getDexState('B'),
+        getDy('A', dx, inToken),
+        getDy('B', dx, inToken)
+    ]);
+
 interface Solution extends Proof {
     dxA: bigint;
     dxB: bigint;
@@ -138,9 +139,6 @@ interface Proof {
     _pC: [bigint, bigint];
 }
 
-export const tradeWithIntent = (userData: UserData, solution: Solution) => {
-    return pluginContract.tradeWithIntent(userData, solution)
-}
 
 export const getDex = async (exchange: "A" | "B") => {
     return exchange === 'A' ? dexAContract : dexBContract;
@@ -148,6 +146,26 @@ export const getDex = async (exchange: "A" | "B") => {
 
 export const getDy = async (exchange: "A" | "B", dx: bigint, inToken: string) => {
     return exchange === 'A' ? dexAContract.get_dy(dx, inToken) : dexBContract.get_dy(dx, inToken);
+}
+
+export async function sendTransactionToModule(
+  dxA: bigint,
+  dxB: bigint,
+  proof: Proof,
+  safeAddress: Address,
+  trade: { inToken: Address; outToken: Address; dx: bigint; minDy: bigint; },
+  nonce: bigint,
+  signature: ArrayBuffer) {
+
+  const solution: Solution = { dxA, dxB, ...proof };
+  const userData = { safe: safeAddress, ...trade, nonce, signature };
+  console.log("Trade with intent", { userData, solution });
+  const recipt = await tradeWithIntent(userData, solution);
+  return recipt.wait();
+}
+
+export const tradeWithIntent = (userData: UserData, solution: Solution) => {
+    return pluginContract.tradeWithIntent(userData, solution)
 }
 
 export const verifyProof = (proof: Proof, publicSignals: string[]) => {
