@@ -1,7 +1,9 @@
+export type Address = string;
+
 export interface UserData {
-    safe: string;
-    inToken: string;
-    outToken: string;
+    safe: Address;
+    inToken: Address;
+    outToken: Address;
     dx: bigint;
     minDy: bigint;
     nonce: bigint;
